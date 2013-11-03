@@ -1,0 +1,8 @@
+#asdf
+assets/
+bin/
+libs/
+out/
+.idea/
+
+local.properties
