@@ -1,3 +1,7 @@
+import android.graphics.Rect;
+
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: loredan
@@ -7,4 +11,13 @@
  */
 public class Map
 {
+    private static final double width = 100;
+    private static final double height = 100;
+    private class Obstacle
+    {
+        private Rect boundaries;
+        private int type;
+    }
+
+    private ArrayList<Obstacle> obstacles;
 }
