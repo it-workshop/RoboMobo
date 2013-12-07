@@ -1,4 +1,5 @@
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 import java.util.ArrayList;
 
@@ -11,13 +12,53 @@ import java.util.ArrayList;
  */
 public class Map
 {
-    private static final double width = 100;
-    private static final double height = 100;
-    private class Obstacle
+    private static final float width = 100.0f;
+    private static final float height = 100.0f;
+
+    public class Obstacle
     {
-        private Rect boundaries;
+        private RectF boundaries;
         private int type;
+
+        public boolean check(float x, float y)
+        {
+            return boundaries.contains(x, y);
+        }
+
+        public float[] boundariesCrossing(float A, float B, float C, float x, float y) throws Exception
+        {
+            //Ax+By+C=0
+            float[] result = new float[2];
+            float[] crossingDistances = new float[4];
+            crossingDistances[0] = Math.abs(x + y - boundaries.right + (A * boundaries.right + C) / B);
+            crossingDistances[1] = Math.abs(x + y + (B * boundaries.top + C) / A - boundaries.top);
+            crossingDistances[2] = Math.abs(x + y - boundaries.left + (A * boundaries.left + C) / B);
+            crossingDistances[3] = Math.abs(x + y + (B * boundaries.bottom + C) / A - boundaries.bottom);
+            if (crossingDistances[0] <= crossingDistances[1] && crossingDistances[0] <= crossingDistances[2] && crossingDistances[0] <= crossingDistances[3])
+            {
+                result[0] = boundaries.right;
+                result[1] = (A * boundaries.right + C) / B;
+            }
+            else if (crossingDistances[1] <= crossingDistances[0] && crossingDistances[1] <= crossingDistances[2] && crossingDistances[1] <= crossingDistances[3])
+            {
+                result[0] = boundaries.right;
+                result[1] = (A * boundaries.right + C) / B;
+            }
+            else if (crossingDistances[2] <= crossingDistances[1] && crossingDistances[2] <= crossingDistances[0] && crossingDistances[2] <= crossingDistances[3])
+            {
+                result[0] = boundaries.right;
+                result[1] = (A * boundaries.right + C) / B;
+            }
+            else if (crossingDistances[3] <= crossingDistances[1] && crossingDistances[3] <= crossingDistances[2] && crossingDistances[3] <= crossingDistances[0])
+            {
+                result[0] = boundaries.right;
+                result[1] = (A * boundaries.right + C) / B;
+            }
+            else
+                throw new Exception("WTF??? No minimal element: " + crossingDistances[0] + " " + crossingDistances[1] + " " + crossingDistances[2] + " " + crossingDistances[3]);
+            return result;
+        }
     }
 
-    private ArrayList<Obstacle> obstacles;
+    public ArrayList<Obstacle> obstacles;
 }
