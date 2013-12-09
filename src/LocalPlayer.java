@@ -14,16 +14,17 @@ public class LocalPlayer extends Player
     public double wallHitX;
     public double wallHitY;
 
+    // probably we will use this constant somewhere else. Consider having a separate class for that
     public static final float WALL_UNHIT_RANGE = 5.0f;
 
     public LocalPlayer(float initX, float initY)
     {
-        id = 0; //TODO: синхронизация ID
-        x = initX;
-        y = initY;
+        m_id = IdGenerator.getInstance().generatePlayerId();
+        m_pos[0] = initX;
+        m_pos[1] = initY;
         directionX = 0;
         directionY = 1;
-        score = 0;
+        m_score = 0;
         wallHit = false;
         wallHitX = 0;
         wallHitY = 0;
@@ -31,8 +32,12 @@ public class LocalPlayer extends Player
 
     public void move(float x, float y, Map map)
     {
-        directionX = (float) ((x - this.x) / Math.sqrt((x - this.x) * (x - this.x) + (y - this.y) * (y - this.y)));
-        directionY = (float) ((y - this.y) / Math.sqrt((x - this.x) * (x - this.x) + (y - this.y) * (y - this.y)));
+        float[] direction = new float[2];
+        float distance = Math.sqrt(Math.pow(x - m_pos[0], 2) + Math.pow(y - this[1], 2));
+        for (int i = 0; i < 2; i++) {
+            direction[i] = (float) ((x - m_pos[i]) / distance);
+        }
+
         if (!wallHit)
         {
             for (Map.Obstacle obstacle : map.obstacles)
@@ -41,6 +46,8 @@ public class LocalPlayer extends Player
                 {
                     // Ax+By+C=0
                     float A, B, C;
+                    // TODO: float - float is never equals to 0.
+                    // TODO: change to abs(float - float) < 1e-16 or something small
                     if ((x - this.x) == 0)
                     {
                         A = 1.0f;

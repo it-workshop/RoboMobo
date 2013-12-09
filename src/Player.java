@@ -3,9 +3,38 @@
  */
 public class Player
 {
-    //NOTE: по умолчанию ось X - вправо, ось Y - вверх
-    public int id;
-    public float x;
-    public float y;
-    public int score;
+    //NOTE: assuming OX goes to the right and OY goes up.
+
+    protected float[] m_pos;
+    protected int m_score;
+    protected boolean m_isLocal;
+    protected int m_id;
+
+    public Player() {
+        m_pos = new float[2];
+    }
+
+    public float getX() {
+        return m_pos[0];
+    }
+
+    public float getY() {
+        return m_pos[1];
+    }
+
+    public void changePos(float[] coord)
+    {
+        m_pos[0] = coord[0];
+        m_pos[1] = coord[1];
+        //Log.wtf("player","x: "+posX+", y: "+posY);
+    }
+
+    public int getScore() {
+        return m_score;
+    }
+
+    public void addScore(int score)
+    {
+        m_score += score;
+    }
 }
