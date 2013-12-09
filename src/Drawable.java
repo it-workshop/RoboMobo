@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
  */
 public interface Drawable
 {
-    Bitmap picture = null;
+    Bitmap m_bitmap = null;
 
-    Bitmap draw();
+    Bitmap getBitmap();
 
     float[] getCoords();
 }

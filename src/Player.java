@@ -1,24 +1,28 @@
+import android.graphics.Bitmap;
+
 /**
  * Created by Loredan on 08.12.13.
  */
-public class Player
+public class Player implements Drawable
 {
     //NOTE: assuming OX goes to the right and OY goes up.
 
     protected float[] m_pos;
     protected int m_score;
-    protected boolean m_isLocal;
     protected int m_id;
 
-    public Player() {
+    public Player()
+    {
         m_pos = new float[2];
     }
 
-    public float getX() {
+    public float getX()
+    {
         return m_pos[0];
     }
 
-    public float getY() {
+    public float getY()
+    {
         return m_pos[1];
     }
 
@@ -29,12 +33,25 @@ public class Player
         //Log.wtf("player","x: "+posX+", y: "+posY);
     }
 
-    public int getScore() {
+    public int getScore()
+    {
         return m_score;
     }
 
     public void addScore(int score)
     {
         m_score += score;
+    }
+
+    @Override
+    public Bitmap getBitmap()
+    {
+        return m_bitmap;
+    }
+
+    @Override
+    public float[] getCoords()
+    {
+        return m_pos;
     }
 }

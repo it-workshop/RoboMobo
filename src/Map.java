@@ -1,4 +1,4 @@
-import android.graphics.Rect;
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class Map
     private static final float width = 100.0f;
     private static final float height = 100.0f;
 
-    public class Obstacle
+    public class Obstacle implements Drawable
     {
         private RectF boundaries;
         private int type;
@@ -57,6 +57,18 @@ public class Map
             else
                 throw new Exception("WTF??? No minimal element: " + crossingDistances[0] + " " + crossingDistances[1] + " " + crossingDistances[2] + " " + crossingDistances[3]);
             return result;
+        }
+
+        @Override
+        public Bitmap getBitmap()
+        {
+            return m_bitmap;
+        }
+
+        @Override
+        public float[] getCoords()
+        {
+            return new float[]{(boundaries.right - boundaries.left) / 2, (boundaries.top - boundaries.bottom) / 2};
         }
     }
 
