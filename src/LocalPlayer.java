@@ -13,8 +13,7 @@ public class LocalPlayer extends Player
     private double m_direction;
 
     private boolean m_wallHit;
-    public double m_wallHitX;
-    public double m_wallHitY;
+    public float[] m_wallHitPos;
 
     // probably we will use this constant somewhere else. Consider having a separate class for that
     public static final float WALL_UNHIT_RANGE = 5.0f;
@@ -27,8 +26,8 @@ public class LocalPlayer extends Player
         m_direction = 0;
         m_score = 0;
         m_wallHit = false;
-        m_wallHitX = 0;
-        m_wallHitY = 0;
+        m_wallHitPos[0] = 0;
+        m_wallHitPos[1] = 0;
     }
 
     public void move(float x, float y, Map map)
@@ -47,30 +46,16 @@ public class LocalPlayer extends Player
             {
                 if (obstacle.check(x, y))
                 {
-                    // Ax+By+C=0
-                    float A, B, C;
-                    A = (float) Math.cos(m_direction + Math.PI / 2);
-                    B = (float) Math.sin(m_direction + Math.PI / 2);
-                    C = -A * x - B * y;
-                    float[] temp;
-                    try
-                    {
-                        temp = obstacle.boundariesCrossing(A, B, C, m_pos[0], m_pos[1]);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                        temp = new float[]{0.0f, 0.0f};
-                    }
+
+                    m_wallHitPos = obstacle.boundariesCrossing(m_pos[0], m_pos[1], x, y);
                     m_wallHit = true;
-                    m_wallHitX = temp[0];
-                    m_wallHitY = temp[1];
+                    break;
                 }
             }
         }
         else
         {
-            if (Math.sqrt((x - m_wallHitX) * (x - m_wallHitX) + (y - m_wallHitY) * (y - m_wallHitY)) < WALL_UNHIT_RANGE)
+            if (Math.sqrt((x - m_wallHitPos[0]) * (x - m_wallHitPos[0]) + (y - m_wallHitPos[1]) * (y - m_wallHitPos[1])) < WALL_UNHIT_RANGE)
             {
                 boolean stillInsideTheWall = false;
                 for (Map.Obstacle obstacle : map.obstacles)
@@ -90,7 +75,7 @@ public class LocalPlayer extends Player
     public Bitmap getBitmap()
     {
         Matrix rotationMatrix = new Matrix();
-        rotationMatrix.setRotate((float) m_direction, m_bitmap.getWidth(), m_bitmap.getHeight());
+        rotationMatrix.setRotate((float) m_direction, m_bitmap.getWidth() / 2, m_bitmap.getHeight() / 2);
         return Bitmap.createBitmap(m_bitmap, 0, 0, m_bitmap.getWidth(), m_bitmap.getHeight(), rotationMatrix, true);
     }
 }

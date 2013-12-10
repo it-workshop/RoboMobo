@@ -1,5 +1,6 @@
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -25,38 +26,38 @@ public class Map
             return boundaries.contains(x, y);
         }
 
-        public float[] boundariesCrossing(float A, float B, float C, float x, float y) throws Exception
+        public float[] boundariesCrossing(float x1, float y1, float x2, float y2)
         {
-            //Ax+By+C=0
-            float[] result = new float[2];
-            float[] crossingDistances = new float[4];
-            crossingDistances[0] = Math.abs(x + y - boundaries.right + (A * boundaries.right + C) / B);
-            crossingDistances[1] = Math.abs(x + y + (B * boundaries.top + C) / A - boundaries.top);
-            crossingDistances[2] = Math.abs(x + y - boundaries.left + (A * boundaries.left + C) / B);
-            crossingDistances[3] = Math.abs(x + y + (B * boundaries.bottom + C) / A - boundaries.bottom);
-            if (crossingDistances[0] <= crossingDistances[1] && crossingDistances[0] <= crossingDistances[2] && crossingDistances[0] <= crossingDistances[3])
+            if (segmentsCrossing(x1, y1, x2, y2, boundaries.left, boundaries.top, boundaries.right, boundaries.top))
             {
-                result[0] = boundaries.right;
-                result[1] = (A * boundaries.right + C) / B;
+                return new float[]{x1 + (x2 - x1) * (boundaries.top - y1) / (y2 - y1), boundaries.top};
             }
-            else if (crossingDistances[1] <= crossingDistances[0] && crossingDistances[1] <= crossingDistances[2] && crossingDistances[1] <= crossingDistances[3])
+            if (segmentsCrossing(x1, y1, x2, y2, boundaries.left, boundaries.bottom, boundaries.right, boundaries.bottom))
             {
-                result[0] = boundaries.right;
-                result[1] = (A * boundaries.right + C) / B;
+                return new float[]{x1 + (x2 - x1) * (boundaries.bottom - y1) / (y2 - y1), boundaries.bottom};
             }
-            else if (crossingDistances[2] <= crossingDistances[1] && crossingDistances[2] <= crossingDistances[0] && crossingDistances[2] <= crossingDistances[3])
+            if (segmentsCrossing(x1, y1, x2, y2, boundaries.left, boundaries.top, boundaries.left, boundaries.bottom))
             {
-                result[0] = boundaries.right;
-                result[1] = (A * boundaries.right + C) / B;
+                return new float[]{boundaries.left, y1 + (y2 - y1) * (boundaries.left - x1) / (x2 - x1)};
             }
-            else if (crossingDistances[3] <= crossingDistances[1] && crossingDistances[3] <= crossingDistances[2] && crossingDistances[3] <= crossingDistances[0])
+            if (segmentsCrossing(x1, y1, x2, y2, boundaries.left, boundaries.top, boundaries.left, boundaries.bottom))
             {
-                result[0] = boundaries.right;
-                result[1] = (A * boundaries.right + C) / B;
+                return new float[]{boundaries.left, y1 + (y2 - y1) * (boundaries.left - x1) / (x2 - x1)};
             }
-            else
-                throw new Exception("WTF??? No minimal element: " + crossingDistances[0] + " " + crossingDistances[1] + " " + crossingDistances[2] + " " + crossingDistances[3]);
-            return result;
+            Log.e("Collision detection", "No crossing at all");
+            return new float[]{0, 0};
+        }
+
+        private boolean segmentsCrossing(float a1x, float a1y, float a2x, float a2y, float b1x, float b1y, float b2x, float b2y)
+        {
+            float a1a2x = a2x - a1x;
+            float a1a2y = a2y - a1y;
+            float a1b1x = b1x - a1x;
+            float a1b1y = b1y - a1y;
+            float a1b2x = b2x - a1x;
+            float a1b2y = b2y - a1y;
+            //[A1A2, A1B1]*[A1A2, A1B2]<0
+            return (a1a2x * a1b1y - a1a2y * a1b1x) * (a1a2x * a1b2y - a1a2y * a1b2x) < 0;
         }
 
         @Override
