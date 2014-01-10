@@ -1,5 +1,8 @@
+package com.robomobo;
+
 import android.app.Activity;
 import android.os.Bundle;
+import com.robomobo.R;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,5 +16,6 @@ public class GameActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout_ingame);
     }
 }
