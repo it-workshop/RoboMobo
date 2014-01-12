@@ -42,7 +42,7 @@ public class LocalPlayer extends Player
 
         if (!m_wallHit)
         {
-            for (Map.Obstacle obstacle : map.obstacles)
+            for (Map.Obstacle obstacle : map.m_obstacles)
             {
                 if (obstacle.check(x, y))
                 {
@@ -58,7 +58,7 @@ public class LocalPlayer extends Player
             if (Math.sqrt((x - m_wallHitPos[0]) * (x - m_wallHitPos[0]) + (y - m_wallHitPos[1]) * (y - m_wallHitPos[1])) < WALL_UNHIT_RANGE)
             {
                 boolean stillInsideTheWall = false;
-                for (Map.Obstacle obstacle : map.obstacles)
+                for (Map.Obstacle obstacle : map.m_obstacles)
                 {
                     if (obstacle.check(x, y))
                         stillInsideTheWall = true;
@@ -72,10 +72,11 @@ public class LocalPlayer extends Player
     }
 
     @Override
-    public Bitmap getBitmap()
+    public Bitmap getBitmap(long time)
     {
-        Matrix rotationMatrix = new Matrix();
+        /*Matrix rotationMatrix = new Matrix();
         rotationMatrix.setRotate((float) m_direction, m_bitmap.getWidth() / 2, m_bitmap.getHeight() / 2);
-        return Bitmap.createBitmap(m_bitmap, 0, 0, m_bitmap.getWidth(), m_bitmap.getHeight(), rotationMatrix, true);
+        return Bitmap.createBitmap(m_bitmap, 0, 0, m_bitmap.getWidth(), m_bitmap.getHeight(), rotationMatrix, true);       */
+        return null;
     }
 }

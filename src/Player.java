@@ -3,7 +3,7 @@ import android.graphics.Bitmap;
 /**
  * Created by Loredan on 08.12.13.
  */
-public class Player implements Drawable
+public class Player implements IDrawable
 {
     //NOTE: assuming OX goes to the right and OY goes up.
 
@@ -44,13 +44,13 @@ public class Player implements Drawable
     }
 
     @Override
-    public Bitmap getBitmap()
+    public Bitmap getBitmap(long time)
     {
-        return m_bitmap;
+        return null;
     }
 
     @Override
-    public float[] getCoords()
+    public float[] getCoords(long time)
     {
         return m_pos;
     }

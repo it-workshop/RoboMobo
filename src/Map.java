@@ -13,10 +13,10 @@ import java.util.ArrayList;
  */
 public class Map
 {
-    private static final float width = 100.0f;
-    private static final float height = 100.0f;
+    private static final float m_width = 100.0f;
+    private static final float m_height = 100.0f;
 
-    public class Obstacle implements Drawable
+    public class Obstacle implements IDrawable
     {
         private RectF boundaries;
         private int type;
@@ -61,17 +61,17 @@ public class Map
         }
 
         @Override
-        public Bitmap getBitmap()
+        public Bitmap getBitmap(long time)
         {
-            return m_bitmap;
+            return null;
         }
 
         @Override
-        public float[] getCoords()
+        public float[] getCoords(long time)
         {
             return new float[]{(boundaries.right - boundaries.left) / 2, (boundaries.top - boundaries.bottom) / 2};
         }
     }
 
-    public ArrayList<Obstacle> obstacles;
+    public ArrayList<Obstacle> m_obstacles;
 }
