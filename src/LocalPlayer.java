@@ -70,13 +70,4 @@ public class LocalPlayer extends Player
         m_pos[0] = x;
         m_pos[1] = y;
     }
-
-    @Override
-    public Bitmap getBitmap(long time)
-    {
-        /*Matrix rotationMatrix = new Matrix();
-        rotationMatrix.setRotate((float) m_direction, m_bitmap.getWidth() / 2, m_bitmap.getHeight() / 2);
-        return Bitmap.createBitmap(m_bitmap, 0, 0, m_bitmap.getWidth(), m_bitmap.getHeight(), rotationMatrix, true);       */
-        return null;
-    }
 }

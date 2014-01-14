@@ -1,8 +1,10 @@
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,10 +15,43 @@ import java.util.ArrayList;
  */
 public class Map
 {
-    private static final float m_width = 100.0f;
-    private static final float m_height = 100.0f;
+    public static final float DEFAULT_WIDTH = 100.0f;
+    public static final float DEFAULT_HEIGHT = 100.0f;
+    private final float m_width;
+    private final float m_height;
+    public List<Obstacle> m_obstacles;
+    public List<IDrawable> m_drawables = new ArrayList<IDrawable>();
 
-    public class Obstacle implements IDrawable
+    public Map(float width, float height)
+    {
+        this.m_width = width;
+        this.m_height = height;
+    }
+
+    public Map()
+    {
+        this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
+
+    public boolean registerObject(Object obj)
+    {
+        if(obj != null)
+        {
+            if(obj instanceof IDrawable && !this.m_drawables.contains(obj))
+            {
+                this.m_drawables.add((IDrawable)obj);
+                return true;
+            }
+            if(obj instanceof Obstacle && !this.m_obstacles.contains(obj))
+            {
+                this.m_obstacles.add((Obstacle)obj);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static class Obstacle implements IDrawable
     {
         private RectF boundaries;
         private int type;
@@ -61,17 +96,13 @@ public class Map
         }
 
         @Override
-        public Bitmap getBitmap(long time)
+        public void draw(Canvas can, long time)
         {
-            return null;
-        }
+            can.save();
+            {
 
-        @Override
-        public float[] getCoords(long time)
-        {
-            return new float[]{(boundaries.right - boundaries.left) / 2, (boundaries.top - boundaries.bottom) / 2};
+            }
+            can.restore();
         }
     }
-
-    public ArrayList<Obstacle> m_obstacles;
 }

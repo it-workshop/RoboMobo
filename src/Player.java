@@ -1,4 +1,5 @@
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
 /**
  * Created by Loredan on 08.12.13.
@@ -44,14 +45,12 @@ public class Player implements IDrawable
     }
 
     @Override
-    public Bitmap getBitmap(long time)
+    public void draw(Canvas can, long time)
     {
-        return null;
-    }
+        can.save();
+        {
 
-    @Override
-    public float[] getCoords(long time)
-    {
-        return m_pos;
+        }
+        can.restore();
     }
 }

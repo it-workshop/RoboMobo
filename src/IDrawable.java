@@ -1,4 +1,5 @@
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
 /**
  * Created by Loredan on 09.12.13.
@@ -6,18 +7,8 @@ import android.graphics.Bitmap;
 public interface IDrawable
 {
     /**
-     * Get the bitmap to draw from time.
+     * Draws this object.
      * @param time
-     * May be used for animations.
-     * @return
      */
-    Bitmap getBitmap(long time);
-
-    /**
-     * Gets the coordinates of this drawable from time.
-     * @param time
-     * May be used for animations.
-     * @return
-     */
-    float[] getCoords(long time);
+    public void draw(Canvas can, long time);
 }
