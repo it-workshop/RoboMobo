@@ -1,4 +1,4 @@
-package com.robomobo;
+package com.robomobo.model;
 
 import android.app.Activity;
 import android.os.Bundle;

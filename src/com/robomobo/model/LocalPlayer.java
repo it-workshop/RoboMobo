@@ -1,5 +1,7 @@
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
+package com.robomobo.model;
+
+import com.robomobo.model.IdGenerator;
+import com.robomobo.model.Map;
 
 /**
  * Created with IntelliJ IDEA.

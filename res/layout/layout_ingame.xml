@@ -11,7 +11,7 @@
     <view
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            class="com.robomobo.SurfaceViewIngame"
+            class="com.robomobo.view.SurfaceViewIngame"
             android:id="@+id/view"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"

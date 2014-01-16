@@ -1,7 +1,9 @@
-import android.graphics.Bitmap;
+package com.robomobo.model;
+
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.Log;
+import com.robomobo.view.IDrawable;
 
 import java.util.ArrayList;
 import java.util.List;

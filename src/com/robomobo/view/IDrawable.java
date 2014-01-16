@@ -1,3 +1,5 @@
+package com.robomobo.view;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 

@@ -1,5 +1,7 @@
-import android.graphics.Bitmap;
+package com.robomobo.model;
+
 import android.graphics.Canvas;
+import com.robomobo.view.IDrawable;
 
 /**
  * Created by Loredan on 08.12.13.

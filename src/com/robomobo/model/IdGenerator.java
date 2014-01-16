@@ -1,3 +1,5 @@
+package com.robomobo.model;
+
 /**
  * Created by cra on 12/9/13.
  * Dummy ID generator. NOT thread-safe
