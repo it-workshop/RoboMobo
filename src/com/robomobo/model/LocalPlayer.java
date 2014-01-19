@@ -53,7 +53,7 @@ public class LocalPlayer extends Player
                 if (obstacle.check(x, y))
                 {
 
-                    m_wallHitPos = obstacle.boundariesCrossing(m_pos.x, m_pos.x, x, y);
+                    m_wallHitPos = obstacle.boundariesCrossing(m_pos.x, m_pos.y, x, y);
                     m_wallHit = true;
                     break;
                 }
