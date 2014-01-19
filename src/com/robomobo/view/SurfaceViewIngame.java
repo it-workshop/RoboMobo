@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.robomobo.model.GameActivity;
@@ -20,6 +21,7 @@ public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Call
     private ThreadDrawIngame m_drawThread;
     private Map m_currentMap;
     private ArrayList<Player> m_players;
+    public float m_scale;
 
     public SurfaceViewIngame(Context context, AttributeSet attrs)
     {
@@ -27,6 +29,7 @@ public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Call
         getHolder().addCallback(this);
         m_currentMap = ((GameActivity) context).m_currentMap;
         m_players = ((GameActivity) context).m_players;
+
     }
 
     public void draw(Canvas canvas)
@@ -41,12 +44,17 @@ public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Call
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
     {
-
+        float scaleX = (width-1)/m_currentMap.getWidth();
+        float scaleY = (height-1)/m_currentMap.getHeight();
+        GRAPHICS.scale = (scaleX < scaleY) ? scaleX : scaleY;
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
+        float scaleX = (getWidth()-1)/m_currentMap.getWidth();
+        float scaleY = (getHeight()-1)/m_currentMap.getHeight();
+        GRAPHICS.scale = scaleX < scaleY ? scaleX : scaleY;
         m_drawThread = new ThreadDrawIngame(getHolder(), getResources(), this);
         m_drawThread.setRunning(true);
         m_drawThread.start();
@@ -117,6 +125,10 @@ public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Call
 
                         this.m_surfaceViewIngame.draw(canvas);
                     }
+                }
+                catch (Exception e)
+                {
+                    Log.e("error", "something went wrong...");
                 }
                 finally
                 {

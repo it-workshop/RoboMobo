@@ -12,6 +12,7 @@ public class GRAPHICS
 {
     public static Bitmap PLAYER;
     public static Bitmap WALL;
+    public static float scale = 1;
 
     public static void init(Activity activity)
     {

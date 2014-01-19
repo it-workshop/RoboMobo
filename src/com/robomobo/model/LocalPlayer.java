@@ -79,18 +79,9 @@ public class LocalPlayer extends Player
     @Override
     public void draw(Canvas can, long time)
     {
-        can.save();
-        try
-        {
-            Matrix transformMatrix = new Matrix();
-            transformMatrix.postRotate((float) m_direction);
-            transformMatrix.postTranslate(m_pos.x-GRAPHICS.PLAYER.getWidth()/2, m_pos.y-GRAPHICS.PLAYER.getHeight()/2);
-            can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());
-        }
-        catch (Exception e)
-        {
-            can.restore();
-            Log.e("Draw error", e.getMessage());
-        }
+        Matrix transformMatrix = new Matrix();
+        transformMatrix.postRotate((float) m_direction);
+        transformMatrix.postTranslate(GRAPHICS.scale*m_pos.x-GRAPHICS.PLAYER.getWidth()/2, GRAPHICS.scale*m_pos.y-GRAPHICS.PLAYER.getHeight()/2);
+        can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());
     }
 }

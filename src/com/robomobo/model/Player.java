@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.Log;
+import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
 
 /**
@@ -51,18 +52,9 @@ public class Player implements IDrawable
     @Override
     public void draw(Canvas can, long time)
     {
-        can.save();
-        try
-        {
-            Paint player_paint = new Paint();
-            player_paint.setStyle(Paint.Style.FILL);
-            player_paint.setARGB(255, 0, 0, 255);
-            can.drawCircle(m_pos.x, m_pos.y, 5, player_paint);
-        }
-        catch (Exception e)
-        {
-            can.restore();
-            Log.e("Draw error", e.getMessage());
-        }
+        Paint player_paint = new Paint();
+        player_paint.setStyle(Paint.Style.FILL);
+        player_paint.setARGB(255, 0, 0, 255);
+        can.drawCircle(GRAPHICS.scale * m_pos.x, GRAPHICS.scale * m_pos.y, 5, player_paint);
     }
 }

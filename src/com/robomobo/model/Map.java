@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
+import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
 
 import java.util.ArrayList;
@@ -29,6 +30,16 @@ public class Map implements IDrawable
     {
         this.m_width = width;
         this.m_height = height;
+    }
+
+    public float getWidth()
+    {
+        return m_width;
+    }
+
+    public float getHeight()
+    {
+        return m_height;
     }
 
     public Map()
@@ -57,19 +68,10 @@ public class Map implements IDrawable
     @Override
     public void draw(Canvas can, long time)
     {
-        can.save();
-        try
-        {
-            Paint field_paint = new Paint();
-            field_paint.setStyle(Paint.Style.STROKE);
-            field_paint.setARGB(127, 255, 255, 255);
-            can.drawRect(0, 0, m_width, m_height, field_paint);
-        }
-        catch (Exception e)
-        {
-            can.restore();
-            Log.e("Draw error", e.getMessage());
-        }
+        Paint field_paint = new Paint();
+        field_paint.setStyle(Paint.Style.STROKE);
+        field_paint.setARGB(127, 255, 255, 255);
+        can.drawRect(0, 0, GRAPHICS.scale * m_width, GRAPHICS.scale * m_height, field_paint);
         for (IDrawable drawable : m_drawables)
             drawable.draw(can, time);
     }
@@ -128,18 +130,14 @@ public class Map implements IDrawable
         public void draw(Canvas can, long time)
         {
             can.save();
-            try
-            {
-                Paint paint = new Paint();
-                paint.setStyle(Paint.Style.FILL);
-                paint.setARGB(127, 255, 0, 0);
-                can.drawRect(m_boundaries, paint);
-            }
-            catch (Exception e)
-            {
-                can.restore();
-                Log.e("Draw error", e.getMessage());
-            }
+
+            can.scale(GRAPHICS.scale, GRAPHICS.scale);
+            Paint paint = new Paint();
+            paint.setStyle(Paint.Style.FILL);
+            paint.setARGB(127, 255, 0, 0);
+            can.drawRect(m_boundaries, paint);
+
+            can.restore();
         }
     }
 }
