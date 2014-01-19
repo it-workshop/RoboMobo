@@ -6,6 +6,11 @@ import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.robomobo.model.GameActivity;
+import com.robomobo.model.Map;
+import com.robomobo.model.Player;
+
+import java.util.ArrayList;
 
 /**
  * Created by Roman on 10.01.14.
@@ -13,16 +18,23 @@ import android.view.SurfaceView;
 public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Callback
 {
     private ThreadDrawIngame m_drawThread;
+    private Map m_currentMap;
+    private ArrayList<Player> m_players;
 
     public SurfaceViewIngame(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         getHolder().addCallback(this);
+        m_currentMap = ((GameActivity) context).m_currentMap;
+        m_players = ((GameActivity) context).m_players;
     }
 
     public void draw(Canvas canvas)
     {
-
+        super.draw(canvas);
+        m_currentMap.draw(canvas, 0);
+        for(Player player : m_players)
+            player.draw(canvas, 0);
     }
 
 
