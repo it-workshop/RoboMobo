@@ -23,6 +23,11 @@ public class Player implements IDrawable
         m_pos = new PointF();
     }
 
+    public Player(float initX, float initY)
+    {
+        m_pos = new PointF(initX, initY);
+    }
+
     public float getX()
     {
         return m_pos.x;
