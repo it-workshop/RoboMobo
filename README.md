@@ -30,4 +30,8 @@ Robomobo - проект игры с элементами дополненной 
 
 В будущем планируется выкладывать установочный файл проекта для тестирования
 
+Стиль кода
+----------
+Используется Google Java Style (<http://google-styleguide.googlecode.com/svn/trunk/javaguide.html>). Настройки автоматического форматирования в IntelliJ IDEA можно импортировать из файла GoogleJavaStyle.jar в корне репозитория (File -\> Import Settings...).
+
 Technoworks (<http://technoworks.ru>), 2014
