@@ -8,12 +8,13 @@ import com.robomobo.R;
 /**
  * Created by Roman on 16.01.14.
  */
-public final class Graphics
+public class GRAPHICS
 {
-    public final Bitmap PLAYER;
-    public final Bitmap WALL;
+    public static Bitmap PLAYER;
+    public static Bitmap WALL;
+    public static float scale = 1;
 
-    public Graphics(Activity activity)
+    public static void init(Activity activity)
     {
         PLAYER = BitmapFactory.decodeResource(activity.getResources(), R.drawable.player_temp);
         WALL = BitmapFactory.decodeResource(activity.getResources(), R.drawable.wall_temp);
