@@ -1,8 +1,6 @@
 package com.robomobo.model;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.util.Log;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
@@ -69,9 +67,15 @@ public class Map implements IDrawable
     public void draw(Canvas can, long time)
     {
         Paint field_paint = new Paint();
-        field_paint.setStyle(Paint.Style.STROKE);
-        field_paint.setARGB(127, 255, 255, 255);
+
+        field_paint.setColor(Color.WHITE);
         can.drawRect(0, 0, GRAPHICS.scale * m_width, GRAPHICS.scale * m_height, field_paint);
+        field_paint.setStyle(Paint.Style.STROKE);
+        field_paint.setColor(Color.MAGENTA);
+        can.drawRect(0, 0, GRAPHICS.scale * m_width, GRAPHICS.scale * m_height, field_paint);
+        field_paint.reset();
+
+
         for (IDrawable drawable : m_drawables)
             drawable.draw(can, time);
     }
@@ -132,10 +136,14 @@ public class Map implements IDrawable
             can.save();
 
             can.scale(GRAPHICS.scale, GRAPHICS.scale);
+
             Paint paint = new Paint();
             paint.setStyle(Paint.Style.FILL);
-            paint.setARGB(127, 255, 0, 0);
-            can.drawRect(m_boundaries, paint);
+            paint.setColor(Color.RED);
+
+            if(GameActivity.DEBUG) can.drawRect(m_boundaries, paint);
+            else
+            can.drawBitmap(GRAPHICS.WALL, new Rect(0, 0, 32, 32), m_boundaries, paint);
 
             can.restore();
         }

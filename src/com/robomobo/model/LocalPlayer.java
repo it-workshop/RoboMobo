@@ -1,9 +1,6 @@
 package com.robomobo.model;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PointF;
+import android.graphics.*;
 import android.util.Log;
 import com.robomobo.model.IdGenerator;
 import com.robomobo.model.Map;
@@ -77,11 +74,14 @@ public class LocalPlayer extends Player
     }
 
     @Override
-    public void draw(Canvas can, long time)
+    public void draw(Canvas can, long time)                          //This is a bad way of doing things.    Why?
     {
         Matrix transformMatrix = new Matrix();
         transformMatrix.postRotate((float) m_direction);
         transformMatrix.postTranslate(GRAPHICS.scale*m_pos.x-GRAPHICS.PLAYER.getWidth()/2, GRAPHICS.scale*m_pos.y-GRAPHICS.PLAYER.getHeight()/2);
+
+        if(GameActivity.DEBUG) can.drawCircle(GRAPHICS.scale*m_pos.x, GRAPHICS.scale*m_pos.y, 0.5f, new Paint(Color.BLACK));    //Because this does not work for no exact reason.
+        else
         can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());
     }
 }

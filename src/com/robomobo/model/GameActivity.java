@@ -19,6 +19,9 @@ public class GameActivity extends Activity
 {
     public Map m_currentMap;
     public ArrayList<Player> m_players;
+
+    public static boolean DEBUG = false;
+
     public void onCreate(Bundle savedInstanceState)
     {
         m_currentMap = new Map();

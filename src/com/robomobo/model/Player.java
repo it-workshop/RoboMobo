@@ -1,8 +1,6 @@
 package com.robomobo.model;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PointF;
+import android.graphics.*;
 import android.util.Log;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
@@ -57,9 +55,19 @@ public class Player implements IDrawable
     @Override
     public void draw(Canvas can, long time)
     {
-        Paint player_paint = new Paint();
-        player_paint.setStyle(Paint.Style.FILL);
-        player_paint.setARGB(255, 0, 0, 255);
-        can.drawCircle(GRAPHICS.scale * m_pos.x, GRAPHICS.scale * m_pos.y, 5, player_paint);
+        can.save();
+        {
+
+            can.scale(GRAPHICS.scale, GRAPHICS.scale);
+            can.translate(this.m_pos.x, this.m_pos.y);
+
+            Paint p = new Paint();
+            p.setColorFilter(new LightingColorFilter(Color.GREEN, 0));
+
+            if(GameActivity.DEBUG) can.drawCircle(0, 0, 0.5f, p);
+            else
+            can.drawBitmap(GRAPHICS.PLAYER, new Rect(0, 0, 32, 32), new RectF(-2, -2, 2, 2), p);
+        }
+        can.restore();
     }
 }
