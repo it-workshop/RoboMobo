@@ -27,9 +27,9 @@ public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Call
     {
         super(context, attrs);
         getHolder().addCallback(this);
+
         m_currentMap = ((GameActivity) context).m_currentMap;
         m_players = ((GameActivity) context).m_players;
-
     }
 
     public void draw(Canvas canvas)

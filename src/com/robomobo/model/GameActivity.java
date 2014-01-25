@@ -3,6 +3,8 @@ package com.robomobo.model;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import com.robomobo.R;
 import com.robomobo.view.GRAPHICS;
 
@@ -34,5 +36,22 @@ public class GameActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_ingame);
         GRAPHICS.init(this);
+
+
+        //buttons
+
+        final Button button_up = (Button) findViewById(R.id.button_up);
+        final Button button_down = (Button) findViewById(R.id.button_down);
+        final Button button_left = (Button) findViewById(R.id.button_left);
+        final Button button_right = (Button) findViewById(R.id.button_right);
+
+        button_up.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                //Move the player.
+            }
+        });
+
     }
 }

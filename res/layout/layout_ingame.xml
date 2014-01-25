@@ -17,4 +17,53 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"/>
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="R"
+            android:id="@+id/button_left"
+            android:minHeight="40dp"
+            android:minWidth="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:enabled="true"
+            android:onClick="onButtonPressed()"/>
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="L"
+            android:id="@+id/button_right"
+            android:minHeight="40dp"
+            android:minWidth="40dp"
+            android:layout_alignTop="@+id/button_down"
+            android:layout_toRightOf="@+id/button_down"
+            android:enabled="true"/>
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="U"
+            android:id="@+id/button_up"
+            android:minWidth="40dp"
+            android:minHeight="40dp"
+            android:layout_above="@+id/button_right"
+            android:layout_toLeftOf="@+id/button_right"
+            android:enabled="true"/>
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="D"
+            android:id="@+id/button_down"
+            android:minWidth="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/button_left"
+            android:minHeight="40dp"
+            android:enabled="true"/>
 </RelativeLayout>
