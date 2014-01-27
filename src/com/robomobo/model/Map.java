@@ -95,32 +95,41 @@ public class Map implements IDrawable
 
         public float[] boundariesCrossing(float x1, float y1, float x2, float y2)
         {
+            float[] result = new float[2];
             if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.top,
                     m_boundaries.right, m_boundaries.top))
             {
-                return new float[] {x1 + (x2 - x1) * (m_boundaries.top - y1) / (y2 - y1),
-                        m_boundaries.top};
+                result[0]=x1 + (x2 - x1) * (m_boundaries.top - y1) / (y2 - y1);
+                result[1]=m_boundaries.top;
+                if(result[0]==result[0] && result[1]==result[1]) //NaN check
+                    return result;
             }
             if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.bottom,
                     m_boundaries.right, m_boundaries.bottom))
             {
-                return new float[] {x1 + (x2 - x1) * (m_boundaries.bottom - y1) / (y2 - y1),
-                        m_boundaries.bottom};
+                result[0]=x1 + (x2 - x1) * (m_boundaries.bottom - y1) / (y2 - y1);
+                result[1]=m_boundaries.bottom;
+                if(result[0]==result[0] && result[1]==result[1])
+                    return result;
             }
             if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.top,
                     m_boundaries.left, m_boundaries.bottom))
             {
-                return new float[] {m_boundaries.left,
-                        y1 + (y2 - y1) * (m_boundaries.left - x1) / (x2 - x1)};
+                result[0]=m_boundaries.left;
+                result[1]=y1 + (y2 - y1) * (m_boundaries.left - x1) / (x2 - x1);
+                if(result[0]==result[0] && result[1]==result[1])
+                    return result;
             }
             if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.right, m_boundaries.top,
                     m_boundaries.right, m_boundaries.bottom))
             {
-                return new float[] {m_boundaries.right,
-                        y1 + (y2 - y1) * (m_boundaries.right - x1) / (x2 - x1)};
+                result[0]=m_boundaries.right;
+                result[1]=y1 + (y2 - y1) * (m_boundaries.right - x1) / (x2 - x1);
+                if(result[0]==result[0] && result[1]==result[1])
+                    return result;
             }
             Log.e("Collision detection", "No crossing at all");
-            return new float[] {0, 0};
+            return new float[] {(x1+x2)/2, (y1+y2)/2}; //if something still goes wrong...
         }
 
         private boolean segmentsCrossing(float a1x, float a1y, float a2x, float a2y, float b1x,
