@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ToggleButton;
 import com.robomobo.R;
 import com.robomobo.view.GRAPHICS;
 
@@ -37,6 +38,7 @@ public class GameActivity extends Activity
         setContentView(R.layout.layout_ingame);
         GRAPHICS.init(this);
 
+        ((ToggleButton) findViewById(R.id.toggleDebug)).setChecked(DEBUG);
 
         //buttons
 
@@ -53,5 +55,13 @@ public class GameActivity extends Activity
             }
         });
 
+    }
+
+    public void setDEBUG(View view)
+    {
+        if(((ToggleButton) view).isChecked())
+            DEBUG = true;
+        else
+            DEBUG = false;
     }
 }

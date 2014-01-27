@@ -80,8 +80,14 @@ public class LocalPlayer extends Player
         transformMatrix.postRotate((float) m_direction);
         transformMatrix.postTranslate(GRAPHICS.scale*m_pos.x-GRAPHICS.PLAYER.getWidth()/2, GRAPHICS.scale*m_pos.y-GRAPHICS.PLAYER.getHeight()/2);
 
-        if(GameActivity.DEBUG) can.drawCircle(GRAPHICS.scale*m_pos.x, GRAPHICS.scale*m_pos.y, 0.5f, new Paint(Color.BLACK));    //Because this does not work for no exact reason.
+        if(GameActivity.DEBUG)
+        {
+            Paint p = new Paint();
+            p.setColor(Color.BLACK);
+            p.setStyle(Paint.Style.FILL);
+            can.drawCircle(GRAPHICS.scale*m_pos.x, GRAPHICS.scale*m_pos.y, 0.5f, p);    //Because this does not work for no exact reason.
+        }
         else
-        can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());
+            can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());
     }
 }

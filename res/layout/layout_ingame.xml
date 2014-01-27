@@ -66,4 +66,10 @@
             android:layout_toRightOf="@+id/button_left"
             android:minHeight="40dp"
             android:enabled="true"/>
+    <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggleDebug" android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" android:textOff="Debug mode OFF"
+            android:textOn="Debug mode ON" android:onClick="setDEBUG"/>
 </RelativeLayout>
