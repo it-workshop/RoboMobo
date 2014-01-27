@@ -2,9 +2,11 @@ package com.robomobo.model;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.robomobo.R;
 import com.robomobo.view.GRAPHICS;
@@ -22,6 +24,7 @@ public class GameActivity extends Activity
 {
     public Map m_currentMap;
     public ArrayList<Player> m_players;
+    private int currentPlayer = 0;
 
     public static boolean DEBUG = false;
 
@@ -39,22 +42,48 @@ public class GameActivity extends Activity
         GRAPHICS.init(this);
 
         ((ToggleButton) findViewById(R.id.toggleDebug)).setChecked(DEBUG);
+    }
 
-        //buttons
+    public void nextPlayer(View view)
+    {
+        if(currentPlayer<m_players.size()-1)
+            currentPlayer++;
+        ((TextView) findViewById(R.id.currentPlayer)).setText(String.valueOf(currentPlayer));
+    }
 
-        final Button button_up = (Button) findViewById(R.id.button_up);
-        final Button button_down = (Button) findViewById(R.id.button_down);
-        final Button button_left = (Button) findViewById(R.id.button_left);
-        final Button button_right = (Button) findViewById(R.id.button_right);
+    public void prevPlayer(View view)
+    {
+        if(currentPlayer>0)
+            currentPlayer--;
+        ((TextView) findViewById(R.id.currentPlayer)).setText(String.valueOf(currentPlayer));
+    }
 
-        button_up.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                //Move the player.
-            }
-        });
+    public void moveUp(View view)
+    {
+        PointF current = m_players.get(currentPlayer).getPos();
+        current.offset(0, -1);
+        m_players.get(currentPlayer).move(current, m_currentMap);
+    }
 
+    public void moveDown(View view)
+    {
+        PointF current = m_players.get(currentPlayer).getPos();
+        current.offset(0, 1);
+        m_players.get(currentPlayer).move(current, m_currentMap);
+    }
+
+    public void moveRight(View view)
+    {
+        PointF current = m_players.get(currentPlayer).getPos();
+        current.offset(1, 0);
+        m_players.get(currentPlayer).move(current, m_currentMap);
+    }
+
+    public void moveLeft(View view)
+    {
+        PointF current = m_players.get(currentPlayer).getPos();
+        current.offset(-1, 0);
+        m_players.get(currentPlayer).move(current, m_currentMap);
     }
 
     public void setDEBUG(View view)

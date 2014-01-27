@@ -36,10 +36,20 @@ public class Player implements IDrawable
         return m_pos.y;
     }
 
-    public void changePos(float x, float y)
+    public PointF getPos()
+    {
+        return new PointF(m_pos.x, m_pos.y);
+    }
+
+    public void move(float x, float y, Map map)
     {
         m_pos.set(x, y);
         //Log.wtf("player","x: "+posX+", y: "+posY);
+    }
+
+    public void move(PointF pos, Map map)
+    {
+        m_pos = pos;
     }
 
     public int getScore()

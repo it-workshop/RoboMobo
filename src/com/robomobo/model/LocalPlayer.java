@@ -1,9 +1,6 @@
 package com.robomobo.model;
 
 import android.graphics.*;
-import android.util.Log;
-import com.robomobo.model.IdGenerator;
-import com.robomobo.model.Map;
 import com.robomobo.view.GRAPHICS;
 
 /**
@@ -41,7 +38,8 @@ public class LocalPlayer extends Player
         float distance = (float) Math.sqrt(Math.pow(x - m_pos.x, 2) + Math.pow(y - m_pos.y, 2));
         direction[0] = (float) ((x - m_pos.x) / distance);
         direction[1] = (float) ((y - m_pos.y) / distance);
-        m_direction = direction[1] >= 0 ? Math.acos(direction[0]) : 2 * Math.PI - Math.acos(direction[0]);
+        m_direction = direction[0] > 0 ? Math.acos(-direction[1]) * 180 / Math.PI :
+                360 - Math.acos(-direction[1]) * 180 / Math.PI;
 
         if (!m_wallHit)
         {
@@ -58,7 +56,8 @@ public class LocalPlayer extends Player
         }
         else
         {
-            if (Math.sqrt((x - m_wallHitPos[0]) * (x - m_wallHitPos[0]) + (y - m_wallHitPos[1]) * (y - m_wallHitPos[1])) < WALL_UNHIT_RANGE)
+            if (Math.sqrt((x - m_wallHitPos[0]) * (x - m_wallHitPos[0]) +
+                    (y - m_wallHitPos[1]) * (y - m_wallHitPos[1])) < WALL_UNHIT_RANGE)
             {
                 boolean stillInsideTheWall = false;
                 for (Map.Obstacle obstacle : map.m_obstacles)
@@ -73,21 +72,38 @@ public class LocalPlayer extends Player
         m_pos.set(x, y);
     }
 
+    public void move(PointF pos, Map map)
+    {
+        move(pos.x, pos.y, map);
+    }
+
     @Override
-    public void draw(Canvas can, long time)                          //This is a bad way of doing things.    Why?
+    public void draw(Canvas can, long time)
     {
         Matrix transformMatrix = new Matrix();
+        transformMatrix
+                .postTranslate(-GRAPHICS.PLAYER.getWidth() / 2, -GRAPHICS.PLAYER.getHeight() / 2);
         transformMatrix.postRotate((float) m_direction);
-        transformMatrix.postTranslate(GRAPHICS.scale*m_pos.x-GRAPHICS.PLAYER.getWidth()/2, GRAPHICS.scale*m_pos.y-GRAPHICS.PLAYER.getHeight()/2);
+        transformMatrix.postTranslate(GRAPHICS.scale * m_pos.x, GRAPHICS.scale * m_pos.y);
 
-        if(GameActivity.DEBUG)
+        if (GameActivity.DEBUG)
         {
             Paint p = new Paint();
             p.setColor(Color.BLACK);
             p.setStyle(Paint.Style.FILL);
-            can.drawCircle(GRAPHICS.scale*m_pos.x, GRAPHICS.scale*m_pos.y, 0.5f, p);    //Because this does not work for no exact reason.
+            can.drawCircle(GRAPHICS.scale * m_pos.x, GRAPHICS.scale * m_pos.y, 0.5f, p);
         }
         else
+        {
             can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());
+            if (m_wallHit)
+            {
+                Paint p = new Paint();
+                p.setStyle(Paint.Style.FILL);
+                p.setARGB(127, 255, 0, 0);
+                can.drawCircle(m_wallHitPos[0] * GRAPHICS.scale, m_wallHitPos[1] * GRAPHICS.scale,
+                        WALL_UNHIT_RANGE * GRAPHICS.scale, p);
+            }
+        }
     }
 }
