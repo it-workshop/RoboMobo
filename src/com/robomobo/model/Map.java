@@ -143,7 +143,7 @@ public class Map implements IDrawable
 
             if(GameActivity.DEBUG) can.drawRect(m_boundaries, paint);
             else
-            can.drawBitmap(GRAPHICS.WALL, new Rect(0, 0, 32, 32), m_boundaries, paint);
+            can.drawBitmap(GRAPHICS.WALL, new Rect(0, 0, GRAPHICS.WALL.getWidth(), GRAPHICS.WALL.getHeight()), m_boundaries, paint);
 
             can.restore();
         }

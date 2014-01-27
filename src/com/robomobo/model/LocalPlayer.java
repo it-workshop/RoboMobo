@@ -85,7 +85,7 @@ public class LocalPlayer extends Player
             Paint p = new Paint();
             p.setColor(Color.BLACK);
             p.setStyle(Paint.Style.FILL);
-            can.drawCircle(GRAPHICS.scale*m_pos.x, GRAPHICS.scale*m_pos.y, 0.5f, p);    //Because this does not work for no exact reason.
+            can.drawCircle(GRAPHICS.scale*m_pos.x, GRAPHICS.scale*m_pos.y, 3, p);    //Because this does not work for no exact reason.
         }
         else
             can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());

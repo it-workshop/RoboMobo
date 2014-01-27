@@ -58,15 +58,15 @@ public class Player implements IDrawable
         can.save();
         {
 
-            can.scale(GRAPHICS.scale, GRAPHICS.scale);
-            can.translate(this.m_pos.x, this.m_pos.y);
+            can.translate(this.m_pos.x * GRAPHICS.scale, this.m_pos.y * GRAPHICS.scale);
 
             Paint p = new Paint();
             p.setColorFilter(new LightingColorFilter(Color.GREEN, 0));
+            p.setColor(Color.GREEN);
 
-            if(GameActivity.DEBUG) can.drawCircle(0, 0, 0.5f, p);
+            if(GameActivity.DEBUG) can.drawCircle(0, 0, 3, p);
             else
-            can.drawBitmap(GRAPHICS.PLAYER, new Rect(0, 0, 32, 32), new RectF(-2, -2, 2, 2), p);
+            can.drawBitmap(GRAPHICS.PLAYER, new Rect(0, 0, GRAPHICS.PLAYER.getWidth(), GRAPHICS.PLAYER.getHeight()), new RectF(-16, -16, 16, 16), p);
         }
         can.restore();
     }
