@@ -21,7 +21,7 @@ public class Map implements IDrawable
     public static final float DEFAULT_HEIGHT = 100.0f;
     private final float m_width;
     private final float m_height;
-    public List<Obstacle> m_obstacles;
+    public List<Obstacle> m_obstacles = new ArrayList<Obstacle>();
     public List<IDrawable> m_drawables = new ArrayList<IDrawable>();
 
     public Map(float width, float height)
