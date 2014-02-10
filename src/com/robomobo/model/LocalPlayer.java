@@ -73,6 +73,11 @@ public class LocalPlayer extends Player
         m_pos.set(x, y);
     }
 
+    public void moveRelative(float x, float y, Map map)
+    {
+        this.move(this.m_pos.x + x, this.m_pos.y + y, map);
+    }
+
     @Override
     public void draw(Canvas can, long time)                          //This is a bad way of doing things.    Why?
     {

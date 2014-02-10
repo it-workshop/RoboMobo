@@ -22,26 +22,27 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="R"
+            android:text="L"
             android:id="@+id/button_left"
             android:minHeight="40dp"
             android:minWidth="40dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:enabled="true"
-            android:onClick="onButtonPressed()"/>
+            android:onClick="movePlayerL"/>
 
     <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="L"
+            android:text="R"
             android:id="@+id/button_right"
             android:minHeight="40dp"
             android:minWidth="40dp"
             android:layout_alignTop="@+id/button_down"
             android:layout_toRightOf="@+id/button_down"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:onClick="movePlayerR"/>
 
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -53,7 +54,8 @@
             android:minHeight="40dp"
             android:layout_above="@+id/button_right"
             android:layout_toLeftOf="@+id/button_right"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:onClick="movePlayerU"/>
 
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -65,7 +67,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/button_left"
             android:minHeight="40dp"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:onClick="movePlayerD"/>
     <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
