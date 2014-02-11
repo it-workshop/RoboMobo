@@ -45,22 +45,19 @@ public class Map implements IDrawable
         this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
-    public boolean registerObject(Object obj)
+    public void registerObject(Object obj)
     {
         if (obj != null)
         {
             if (obj instanceof IDrawable && !this.m_drawables.contains(obj))
             {
                 this.m_drawables.add((IDrawable) obj);
-                return true;
             }
             if (obj instanceof Obstacle && !this.m_obstacles.contains(obj))
             {
                 this.m_obstacles.add((Obstacle) obj);
-                return true;
             }
         }
-        return false;
     }
 
     @Override
@@ -98,36 +95,66 @@ public class Map implements IDrawable
 
         public float[] boundariesCrossing(float x1, float y1, float x2, float y2)
         {
-            if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.top, m_boundaries.right, m_boundaries.top))
+            float[] result = new float[2];
+            if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.top,
+                    m_boundaries.right, m_boundaries.top))
             {
-                return new float[]{x1 + (x2 - x1) * (m_boundaries.top - y1) / (y2 - y1), m_boundaries.top};
+                result[0]=x1 + (x2 - x1) * (m_boundaries.top - y1) / (y2 - y1);
+                result[1]=m_boundaries.top;
+                if(result[0]==result[0] && result[1]==result[1]) //NaN check
+                    return result;
             }
-            if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.bottom, m_boundaries.right, m_boundaries.bottom))
+            if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.bottom,
+                    m_boundaries.right, m_boundaries.bottom))
             {
-                return new float[]{x1 + (x2 - x1) * (m_boundaries.bottom - y1) / (y2 - y1), m_boundaries.bottom};
+                result[0]=x1 + (x2 - x1) * (m_boundaries.bottom - y1) / (y2 - y1);
+                result[1]=m_boundaries.bottom;
+                if(result[0]==result[0] && result[1]==result[1])
+                    return result;
             }
-            if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.top, m_boundaries.left, m_boundaries.bottom))
+            if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.top,
+                    m_boundaries.left, m_boundaries.bottom))
             {
-                return new float[]{m_boundaries.left, y1 + (y2 - y1) * (m_boundaries.left - x1) / (x2 - x1)};
+                result[0]=m_boundaries.left;
+                result[1]=y1 + (y2 - y1) * (m_boundaries.left - x1) / (x2 - x1);
+                if(result[0]==result[0] && result[1]==result[1])
+                    return result;
             }
-            if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.left, m_boundaries.top, m_boundaries.left, m_boundaries.bottom))
+            if (segmentsCrossing(x1, y1, x2, y2, m_boundaries.right, m_boundaries.top,
+                    m_boundaries.right, m_boundaries.bottom))
             {
-                return new float[]{m_boundaries.left, y1 + (y2 - y1) * (m_boundaries.left - x1) / (x2 - x1)};
+                result[0]=m_boundaries.right;
+                result[1]=y1 + (y2 - y1) * (m_boundaries.right - x1) / (x2 - x1);
+                if(result[0]==result[0] && result[1]==result[1])
+                    return result;
             }
             Log.e("Collision detection", "No crossing at all");
-            return new float[]{0, 0};
+            return new float[] {(x1+x2)/2, (y1+y2)/2}; //if something still goes wrong...
         }
 
-        private boolean segmentsCrossing(float a1x, float a1y, float a2x, float a2y, float b1x, float b1y, float b2x, float b2y)
+        private boolean segmentsCrossing(float a1x, float a1y, float a2x, float a2y, float b1x,
+                float b1y, float b2x, float b2y)
         {
-            float a1a2x = a2x - a1x;
-            float a1a2y = a2y - a1y;
-            float a1b1x = b1x - a1x;
-            float a1b1y = b1y - a1y;
-            float a1b2x = b2x - a1x;
-            float a1b2y = b2y - a1y;
-            //[A1A2, A1B1]*[A1A2, A1B2]<0
-            return (a1a2x * a1b1y - a1a2y * a1b1x) * (a1a2x * a1b2y - a1a2y * a1b2x) < 0;
+            if (pointOnSegment(a1x, a1y, b1x, b1y, b2x, b2y))
+                return true;
+            if (pointOnSegment(a2x, a2y, b1x, b1y, b2x, b2y))
+                return true;
+            if (pointOnSegment(b1x, b1y, a1x, a1y, a2x, a2y))
+                return true;
+            if (pointOnSegment(b2x, b2y, a1x, a1y, a2x, a2y))
+                return true;
+            //[A1A2, A1B1]*[A1A2, A1B2]<0 && [B1B2, B1A1]*[B1B2, B1A2]<0
+            return (((a2x - a1x) * (b1y - a1y) - (a2y - a1y) * (b1x - a1x)) *
+                    ((a2x - a1x) * (b2y - a1y) - (a2y - a1y) * (b2x - a1x)) < 0) &&
+                    (((b2x - b1x) * (a1y - b1y) - (b2y - b1y) * (a1x - b1x)) *
+                            ((b2x - b1x) * (a2y - b1y) - (b2y - b1y) * (a2x - b1x)) < 0);
+        }
+
+        private boolean pointOnSegment(float ax, float ay, float b1x, float b1y, float b2x,
+                float b2y)
+        {
+            return ((b1x - ax) * (b2y - ay) - (b1y - ay) * (b2x - ax) == 0) &&
+                    ((b1x - ax) * (b2x - ax) + (b1y - ay) * (b2y - ay) <= 0);
         }
 
         @Override
@@ -141,7 +168,7 @@ public class Map implements IDrawable
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(Color.RED);
 
-            if(GameActivity.DEBUG) can.drawRect(m_boundaries, paint);
+            if (GameActivity.DEBUG) can.drawRect(m_boundaries, paint);
             else
             can.drawBitmap(GRAPHICS.WALL, new Rect(0, 0, GRAPHICS.WALL.getWidth(), GRAPHICS.WALL.getHeight()), m_boundaries, paint);
 

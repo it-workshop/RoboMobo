@@ -36,10 +36,20 @@ public class Player implements IDrawable
         return m_pos.y;
     }
 
-    public void changePos(float x, float y)
+    public PointF getPos()
+    {
+        return new PointF(m_pos.x, m_pos.y);
+    }
+
+    public void move(float x, float y, Map map)
     {
         m_pos.set(x, y);
         //Log.wtf("player","x: "+posX+", y: "+posY);
+    }
+
+    public void move(PointF pos, Map map)
+    {
+        m_pos = pos;
     }
 
     public int getScore()
@@ -69,5 +79,10 @@ public class Player implements IDrawable
             can.drawBitmap(GRAPHICS.PLAYER, new Rect(0, 0, GRAPHICS.PLAYER.getWidth(), GRAPHICS.PLAYER.getHeight()), new RectF(-16, -16, 16, 16), p);
         }
         can.restore();
+    }
+
+    public void moveRelative(float x, float y, Map map)
+    {
+        this.move(this.m_pos.x + x, this.m_pos.y + y, map);
     }
 }
