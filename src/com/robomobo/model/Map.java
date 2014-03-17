@@ -1,6 +1,7 @@
 package com.robomobo.model;
 
 import android.graphics.*;
+import android.os.CountDownTimer;
 import android.util.Log;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
@@ -22,6 +23,7 @@ public class Map implements IDrawable
     private final float m_width;
     private final float m_height;
     public List<Obstacle> m_obstacles = new ArrayList<Obstacle>();
+    public List<Pickup> m_pickups = new ArrayList<Pickup>();
     public List<IDrawable> m_drawables = new ArrayList<IDrawable>();
 
     public Map(float width, float height)
@@ -56,6 +58,11 @@ public class Map implements IDrawable
             if (obj instanceof Obstacle && !this.m_obstacles.contains(obj))
             {
                 this.m_obstacles.add((Obstacle) obj);
+            }
+            if (obj instanceof Pickup && !this.m_pickups.contains(obj))
+            {
+                this.m_pickups.add((Pickup) obj);
+                ((Pickup) obj).register(m_pickups, m_drawables);
             }
         }
     }

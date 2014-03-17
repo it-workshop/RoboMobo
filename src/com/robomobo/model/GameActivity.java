@@ -30,16 +30,18 @@ public class GameActivity extends Activity
 
     public void onCreate(Bundle savedInstanceState)
     {
+        GRAPHICS.init(this);
         m_currentMap = new Map();
         m_currentMap.registerObject(new Map.Obstacle(10, 20, 30, 40, 0));
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));
+        m_currentMap.registerObject(new Pickup(50, 40));
+        m_currentMap.registerObject(new Pickup(10, 60));
         m_players = new ArrayList<Player>();
         m_players.add(new LocalPlayer(60, 10));
         m_players.add(new Player(70, 30));
         m_players.add(new Player(38, 73));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_ingame);
-        GRAPHICS.init(this);
 
         ((ToggleButton) findViewById(R.id.toggleDebug)).setChecked(DEBUG);
     }
