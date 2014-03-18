@@ -9,31 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Всеволод on 17.03.14.
+ * Created by Vsevolod on 17.03.14.
  */
 public class Pickup implements IDrawable
 {
-    private ArrayList<Bitmap> m_icon;
-    private int m_currentBitmap;
+    public PickupType m_type = PickupType.none;
+    private long m_lifetime_ms; //lifetime in milliseconds
     private PointF m_coords;
-    private List<Pickup> m_pickups;
-    private List<IDrawable> m_drawables;
+    private Map m_mapReference;
 
     public Pickup(float x, float y)
     {
-        m_icon = GRAPHICS.PICKUP_0;
         m_coords = new PointF(x, y);
     }
 
-    public Pickup(int type, float x, float y)
+    public Pickup(float x, float y, PickupType type)
     {
-        switch (type)
-        {
-            case 0:
-                m_icon = GRAPHICS.PICKUP_0;
-                break;
-        }
-        m_coords = new PointF(x, y);
+        this(x, y);
+        m_type = type;
     }
 
     @Override
@@ -46,28 +39,58 @@ public class Pickup implements IDrawable
             can.drawCircle(m_coords.x*GRAPHICS.scale, m_coords.y*GRAPHICS.scale, 3, p);
         else
         {
-            can.drawBitmap(m_icon.get(m_currentBitmap), m_coords.x*GRAPHICS.scale-m_icon.get(m_currentBitmap).getWidth()/2, m_coords.y*GRAPHICS.scale-m_icon.get(m_currentBitmap).getHeight()/2, p);
+            switch(m_type)
+            {
+                case RoundYellowThingyThatLooksLikeSun:
+                    int f = (int)((m_lifetime_ms / GRAPHICS.PICKUP_0_FRAMERATE) % GRAPHICS.PICKUP_0.size());
+                    can.drawBitmap(GRAPHICS.PICKUP_0.get(f), m_coords.x*GRAPHICS.scale-GRAPHICS.PICKUP_0.get(f).getWidth()/2, m_coords.y*GRAPHICS.scale-GRAPHICS.PICKUP_0.get(f).getHeight()/2, p);
+                    break;
+
+                default:
+                    can.drawCircle(m_coords.x*GRAPHICS.scale, m_coords.y*GRAPHICS.scale, 3, p);
+                    break;
+            }
+
         }
     }
 
-    public void register(List<Pickup> pickups, List<IDrawable> drawables)
+    public void register(Map map)
     {
-        m_pickups = pickups;
-        m_drawables = drawables;
-        new CountDownTimer(20000, 100)
+        m_mapReference = map;
+
+        new CountDownTimer(20000, 50)
         {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                m_currentBitmap = ++m_currentBitmap%25;
+                m_lifetime_ms += 50;
             }
 
             @Override
             public void onFinish()
             {
-                m_drawables.remove(this);
-                m_pickups.remove(this);
+                onTimerExpired();
             }
         }.start();
+    }
+
+    public void onTimerExpired()
+    {
+        m_mapReference.m_drawables.remove(this);
+        m_mapReference.m_pickups.remove(this);
+    }
+
+    public static enum  PickupType
+    {
+        none(1),
+        RoundYellowThingyThatLooksLikeSun(10),                   //Yes, such long type names are necessary. NECESSARY I SAY!
+        BlueIcyCrystalStuff(20);
+
+        public int m_points;
+
+        private PickupType(int p)
+        {
+            m_points = p;
+        }
     }
 }

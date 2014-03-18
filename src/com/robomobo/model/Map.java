@@ -62,7 +62,7 @@ public class Map implements IDrawable
             if (obj instanceof Pickup && !this.m_pickups.contains(obj))
             {
                 this.m_pickups.add((Pickup) obj);
-                ((Pickup) obj).register(m_pickups, m_drawables);
+                ((Pickup) obj).register(this);
             }
         }
     }

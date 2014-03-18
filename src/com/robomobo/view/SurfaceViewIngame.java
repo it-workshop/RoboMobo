@@ -128,8 +128,8 @@ public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Call
                 }
                 catch (Exception e)
                 {
-                    Log.e("error", "something went wrong...");
-                    e.printStackTrace();
+                    Log.e("error", "Achtung, bitte, bitte! Draw thread threw an exception!");
+                    Log.e("error", Log.getStackTraceString(e));
                 }
                 finally
                 {
