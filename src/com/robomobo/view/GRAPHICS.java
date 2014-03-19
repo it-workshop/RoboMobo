@@ -28,6 +28,7 @@ public class GRAPHICS
         PLAYER = BitmapFactory.decodeResource(activity.getResources(), R.drawable.player_temp);
         WALL = BitmapFactory.decodeResource(activity.getResources(), R.drawable.wall_temp);
         PICKUP_0 = new ArrayList<Bitmap>(25);
+        PICKUP_1 = new ArrayList<Bitmap>(11);
         PICKUP_0.add(BitmapFactory.decodeResource(activity.getResources(), R.drawable.pickup_0_0));
         PICKUP_0.add(BitmapFactory.decodeResource(activity.getResources(), R.drawable.pickup_0_1));
         PICKUP_0.add(BitmapFactory.decodeResource(activity.getResources(), R.drawable.pickup_0_2));

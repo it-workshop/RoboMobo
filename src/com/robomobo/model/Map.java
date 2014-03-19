@@ -172,8 +172,8 @@ public class Map implements IDrawable
             can.scale(GRAPHICS.scale, GRAPHICS.scale);
 
             Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(Color.BLUE);
 
             if (GameActivity.DEBUG) can.drawRect(m_boundaries, paint);
             else

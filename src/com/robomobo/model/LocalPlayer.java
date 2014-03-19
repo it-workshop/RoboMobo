@@ -76,28 +76,40 @@ public class LocalPlayer extends Player
     @Override
     public void draw(Canvas can, long time)
     {
-        Matrix transformMatrix = new Matrix();
-        transformMatrix.postTranslate(-GRAPHICS.PLAYER.getWidth() / 2, -GRAPHICS.PLAYER.getHeight() / 2);
-        transformMatrix.postRotate((float) m_direction);
-        transformMatrix.postTranslate(GRAPHICS.scale * m_pos.x, GRAPHICS.scale * m_pos.y);
-
-        if (GameActivity.DEBUG)
+        if (m_wallHit)
         {
-            Paint p = new Paint();
-            p.setColor(Color.BLACK);
-            p.setStyle(Paint.Style.FILL);
-            can.drawCircle(GRAPHICS.scale*m_pos.x, GRAPHICS.scale*m_pos.y, 3, p);    //Because this does not work for no exact reason.
-        }
-        else
-        {
-            can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());
-            if (m_wallHit)
+            can.save();
             {
                 Paint p = new Paint();
                 p.setStyle(Paint.Style.FILL);
                 p.setARGB(127, 255, 0, 0);
-                can.drawCircle(m_wallHitPos[0] * GRAPHICS.scale, m_wallHitPos[1] * GRAPHICS.scale, WALL_UNHIT_RANGE * GRAPHICS.scale, p);
+
+                can.translate(m_wallHitPos[0] * GRAPHICS.scale, m_wallHitPos[1] * GRAPHICS.scale);
+                float f = (float) (1 + (Math.sin(System.currentTimeMillis() / 100d) * 0.06125d));
+                can.scale(f, f);
+
+                can.drawCircle(0, 0, WALL_UNHIT_RANGE * GRAPHICS.scale, p);
+            }
+            can.restore();
+        }
+
+        can.save();
+        {
+            can.translate(this.m_pos.x * GRAPHICS.scale, this.m_pos.y * GRAPHICS.scale);
+            can.rotate((float) m_direction);
+
+            if (GameActivity.DEBUG)
+            {
+                Paint p = new Paint();
+                p.setColor(Color.BLACK);
+                p.setStyle(Paint.Style.FILL);
+                can.drawCircle(0, 0, 3, p);
+            }
+            else
+            {
+                can.drawBitmap(GRAPHICS.PLAYER, new Rect(0, 0, GRAPHICS.PLAYER.getWidth(), GRAPHICS.PLAYER.getHeight()), new RectF(-16, -16, 16, 16), new Paint());
             }
         }
+        can.restore();
     }
 }
