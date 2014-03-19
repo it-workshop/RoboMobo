@@ -64,12 +64,12 @@ public class Pickup implements IDrawable
     {
         m_mapReference = map;
 
-        new CountDownTimer(20000, 50)
+        new CountDownTimer(20000, 1)
         {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                m_lifetime_ms += 50;
+                m_lifetime_ms++;
             }
 
             @Override
