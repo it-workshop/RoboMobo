@@ -5,9 +5,6 @@ import android.os.CountDownTimer;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Vsevolod on 17.03.14.
  */
@@ -75,12 +72,23 @@ public class Pickup implements IDrawable
             @Override
             public void onFinish()
             {
-                onTimerExpired();
+                onRemoved();
             }
         }.start();
     }
 
-    public void onTimerExpired()
+    public PointF getPosition()
+    {
+        return this.m_coords;
+    }
+
+    public void onPickedUp()
+    {
+        //Increase da score.
+        onRemoved();
+    }
+
+    public void onRemoved()
     {
         m_mapReference.m_drawables.remove(this);
         m_mapReference.m_pickups.remove(this);

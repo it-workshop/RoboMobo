@@ -20,6 +20,8 @@ public class LocalPlayer extends Player
     // probably we will use this constant somewhere else. Consider having a separate class for that
     public static final float WALL_UNHIT_RANGE = 5.0f;
 
+    public static final float PICKUP_PICK_UP_RANGE = 3.0f;
+
     public LocalPlayer(float initX, float initY)
     {
         m_id = IdGenerator.getInstance().generatePlayerId();
@@ -50,6 +52,14 @@ public class LocalPlayer extends Player
                     m_wallHitPos = obstacle.boundariesCrossing(m_pos.x, m_pos.y, x, y);
                     m_wallHit = true;
                     break;
+                }
+            }
+
+            for(Pickup pickup : map.m_pickups)
+            {
+                if(Math.pow(pickup.getPosition().x - x, 2.0d) + Math.pow(pickup.getPosition().y - y, 2.0d) < PICKUP_PICK_UP_RANGE)
+                {
+                    pickup.onPickedUp();
                 }
             }
         }
