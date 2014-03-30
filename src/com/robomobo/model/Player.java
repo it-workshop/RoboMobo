@@ -4,6 +4,7 @@ import android.graphics.*;
 import android.util.Log;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
+import com.robomobo.view.IconProvider;
 
 /**
  * Created by Loredan on 08.12.13.
@@ -76,7 +77,10 @@ public class Player implements IDrawable
 
             if(GameActivity.DEBUG) can.drawCircle(0, 0, 3, p);
             else
-            can.drawBitmap(GRAPHICS.PLAYER, new Rect(0, 0, GRAPHICS.PLAYER.getWidth(), GRAPHICS.PLAYER.getHeight()), new RectF(-16, -16, 16, 16), p);
+            {
+                Bitmap b = IconProvider.getIconBitmap("player", 0);
+                can.drawBitmap(b, new Rect(0, 0, b.getWidth(), b.getHeight()), new RectF(-16, -16, 16, 16), p);
+            }
         }
         can.restore();
     }

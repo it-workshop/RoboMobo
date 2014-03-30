@@ -2,6 +2,7 @@ package com.robomobo.model;
 
 import android.graphics.*;
 import com.robomobo.view.GRAPHICS;
+import com.robomobo.view.IconProvider;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,6 +20,8 @@ public class LocalPlayer extends Player
 
     // probably we will use this constant somewhere else. Consider having a separate class for that
     public static final float WALL_UNHIT_RANGE = 5.0f;
+
+    public static final float PICKUP_PICK_UP_RANGE = 3.0f;
 
     public LocalPlayer(float initX, float initY)
     {
@@ -52,6 +55,17 @@ public class LocalPlayer extends Player
                     break;
                 }
             }
+
+
+            //for(Pickup pickup : map.m_pickups)
+            for(int i = 0; i < map.m_pickups.size(); i++)
+            {
+                Pickup pickup = map.m_pickups.get(i);
+                if(Math.pow(pickup.getPosition().x - x, 2.0d) + Math.pow(pickup.getPosition().y - y, 2.0d) < PICKUP_PICK_UP_RANGE)
+                {
+                    pickup.onPickedUp();
+                }
+            }
         }
         else
         {
@@ -76,28 +90,41 @@ public class LocalPlayer extends Player
     @Override
     public void draw(Canvas can, long time)
     {
-        Matrix transformMatrix = new Matrix();
-        transformMatrix.postTranslate(-GRAPHICS.PLAYER.getWidth() / 2, -GRAPHICS.PLAYER.getHeight() / 2);
-        transformMatrix.postRotate((float) m_direction);
-        transformMatrix.postTranslate(GRAPHICS.scale * m_pos.x, GRAPHICS.scale * m_pos.y);
-
-        if (GameActivity.DEBUG)
+        if (m_wallHit)
         {
-            Paint p = new Paint();
-            p.setColor(Color.BLACK);
-            p.setStyle(Paint.Style.FILL);
-            can.drawCircle(GRAPHICS.scale*m_pos.x, GRAPHICS.scale*m_pos.y, 3, p);    //Because this does not work for no exact reason.
-        }
-        else
-        {
-            can.drawBitmap(GRAPHICS.PLAYER, transformMatrix, new Paint());
-            if (m_wallHit)
+            can.save();
             {
                 Paint p = new Paint();
                 p.setStyle(Paint.Style.FILL);
                 p.setARGB(127, 255, 0, 0);
-                can.drawCircle(m_wallHitPos[0] * GRAPHICS.scale, m_wallHitPos[1] * GRAPHICS.scale, WALL_UNHIT_RANGE * GRAPHICS.scale, p);
+
+                can.translate(m_wallHitPos[0] * GRAPHICS.scale, m_wallHitPos[1] * GRAPHICS.scale);
+                float f = (float) (1 + (Math.sin(System.currentTimeMillis() / 100d) * 0.06125d));
+                can.scale(f, f);
+
+                can.drawCircle(0, 0, WALL_UNHIT_RANGE * GRAPHICS.scale, p);
+            }
+            can.restore();
+        }
+
+        can.save();
+        {
+            can.translate(this.m_pos.x * GRAPHICS.scale, this.m_pos.y * GRAPHICS.scale);
+            can.rotate((float) m_direction);
+
+            if (GameActivity.DEBUG)
+            {
+                Paint p = new Paint();
+                p.setColor(Color.BLACK);
+                p.setStyle(Paint.Style.FILL);
+                can.drawCircle(0, 0, 3, p);
+            }
+            else
+            {
+                Bitmap b = IconProvider.getIconBitmap("player", 0);
+                can.drawBitmap(b, new Rect(0, 0, b.getWidth(), b.getHeight()), new RectF(-16, -16, 16, 16), new Paint());
             }
         }
+        can.restore();
     }
 }

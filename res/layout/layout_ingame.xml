@@ -101,4 +101,14 @@
             android:id="@+id/currentPlayer"
             android:layout_above="@+id/next" android:layout_alignParentRight="true"
             />
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Spawn a pickup"
+            android:id="@+id/spawn_pickup"
+            android:layout_below="@+id/toggleDebug"
+            android:layout_alignParentRight="true"
+            android:layout_alignLeft="@+id/toggleDebug"
+            android:onClick="spawnPickup"/>
 </RelativeLayout>

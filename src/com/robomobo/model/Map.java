@@ -1,9 +1,11 @@
 package com.robomobo.model;
 
 import android.graphics.*;
+import android.os.CountDownTimer;
 import android.util.Log;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
+import com.robomobo.view.IconProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ public class Map implements IDrawable
     private final float m_width;
     private final float m_height;
     public List<Obstacle> m_obstacles = new ArrayList<Obstacle>();
+    public List<Pickup> m_pickups = new ArrayList<Pickup>();
     public List<IDrawable> m_drawables = new ArrayList<IDrawable>();
 
     public Map(float width, float height)
@@ -57,6 +60,11 @@ public class Map implements IDrawable
             {
                 this.m_obstacles.add((Obstacle) obj);
             }
+            if (obj instanceof Pickup && !this.m_pickups.contains(obj))
+            {
+                this.m_pickups.add((Pickup) obj);
+                ((Pickup) obj).register(this);
+            }
         }
     }
 
@@ -73,8 +81,12 @@ public class Map implements IDrawable
         field_paint.reset();
 
 
-        for (IDrawable drawable : m_drawables)
+        //for (IDrawable drawable : m_drawables)
+        for(int i = 0; i < m_drawables.size(); i++)
+        {
+            IDrawable drawable = m_drawables.get(i);
             drawable.draw(can, time);
+        }
     }
 
     public static class Obstacle implements IDrawable
@@ -165,12 +177,15 @@ public class Map implements IDrawable
             can.scale(GRAPHICS.scale, GRAPHICS.scale);
 
             Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(Color.BLUE);
 
             if (GameActivity.DEBUG) can.drawRect(m_boundaries, paint);
             else
-            can.drawBitmap(GRAPHICS.WALL, new Rect(0, 0, GRAPHICS.WALL.getWidth(), GRAPHICS.WALL.getHeight()), m_boundaries, paint);
+            {
+                Bitmap b = IconProvider.getIconBitmap("wall", 0);
+                can.drawBitmap(b, new Rect(0, 0, b.getWidth(), b.getHeight()), m_boundaries, paint);
+            }
 
             can.restore();
         }
