@@ -56,8 +56,11 @@ public class LocalPlayer extends Player
                 }
             }
 
-            for(Pickup pickup : map.m_pickups)
+
+            //for(Pickup pickup : map.m_pickups)
+            for(int i = 0; i < map.m_pickups.size(); i++)
             {
+                Pickup pickup = map.m_pickups.get(i);
                 if(Math.pow(pickup.getPosition().x - x, 2.0d) + Math.pow(pickup.getPosition().y - y, 2.0d) < PICKUP_PICK_UP_RANGE)
                 {
                     pickup.onPickedUp();

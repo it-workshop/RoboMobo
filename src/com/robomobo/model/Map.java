@@ -81,8 +81,12 @@ public class Map implements IDrawable
         field_paint.reset();
 
 
-        for (IDrawable drawable : m_drawables)
+        //for (IDrawable drawable : m_drawables)
+        for(int i = 0; i < m_drawables.size(); i++)
+        {
+            IDrawable drawable = m_drawables.get(i);
             drawable.draw(can, time);
+        }
     }
 
     public static class Obstacle implements IDrawable
