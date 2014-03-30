@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.robomobo.R;
 import com.robomobo.view.GRAPHICS;
+import com.robomobo.view.IconProvider;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,8 @@ public class GameActivity extends Activity
 
     public void onCreate(Bundle savedInstanceState)
     {
-        GRAPHICS.init(this);
+        //GRAPHICS.init(this);
+        IconProvider.init(this);
         m_currentMap = new Map();
         m_currentMap.registerObject(new Map.Obstacle(10, 20, 30, 40, 0));
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));

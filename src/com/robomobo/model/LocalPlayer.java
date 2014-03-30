@@ -2,6 +2,7 @@ package com.robomobo.model;
 
 import android.graphics.*;
 import com.robomobo.view.GRAPHICS;
+import com.robomobo.view.IconProvider;
 
 /**
  * Created with IntelliJ IDEA.
@@ -117,7 +118,8 @@ public class LocalPlayer extends Player
             }
             else
             {
-                can.drawBitmap(GRAPHICS.PLAYER, new Rect(0, 0, GRAPHICS.PLAYER.getWidth(), GRAPHICS.PLAYER.getHeight()), new RectF(-16, -16, 16, 16), new Paint());
+                Bitmap b = IconProvider.getIconBitmap("player", 0);
+                can.drawBitmap(b, new Rect(0, 0, b.getWidth(), b.getHeight()), new RectF(-16, -16, 16, 16), new Paint());
             }
         }
         can.restore();

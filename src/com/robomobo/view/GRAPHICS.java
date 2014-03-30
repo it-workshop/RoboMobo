@@ -10,6 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by Roman on 16.01.14.
  */
+@Deprecated
 public class GRAPHICS
 {
     public static Bitmap PLAYER;

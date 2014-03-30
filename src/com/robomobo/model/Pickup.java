@@ -4,6 +4,7 @@ import android.graphics.*;
 import android.os.CountDownTimer;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
+import com.robomobo.view.IconProvider;
 
 /**
  * Created by Vsevolod on 17.03.14.
@@ -11,7 +12,7 @@ import com.robomobo.view.IDrawable;
 public class Pickup implements IDrawable
 {
     public PickupType m_type = PickupType.none;
-    private long m_lifetime_ms; //lifetime in milliseconds
+    private int m_lifetime_ms; //lifetime in milliseconds
     private PointF m_coords;
     private Map m_mapReference;
 
@@ -36,21 +37,25 @@ public class Pickup implements IDrawable
             can.drawCircle(m_coords.x*GRAPHICS.scale, m_coords.y*GRAPHICS.scale, 3, p);
         else
         {
+            Bitmap b = IconProvider.getIconBitmap(m_type.m_iconId, m_lifetime_ms);
             int f = 0;
             switch(m_type)
-            {
-                case RoundYellowThingyThatLooksLikeSun:
+            {                                                              //Left here for special fancy rendering cases.
+                /*case RoundYellowThingyThatLooksLikeSun:
+
                     f = (int)((m_lifetime_ms / GRAPHICS.PICKUP_0_FRAMERATE) % GRAPHICS.PICKUP_0.size());
+
                     can.drawBitmap(GRAPHICS.PICKUP_0.get(f), m_coords.x*GRAPHICS.scale-GRAPHICS.PICKUP_0.get(f).getWidth()/2, m_coords.y*GRAPHICS.scale-GRAPHICS.PICKUP_0.get(f).getHeight()/2, p);
                     break;
 
                 case BlueIcyCrystalStuff:
                     f = (int)((m_lifetime_ms / GRAPHICS.PICKUP_1_FRAMERATE) % GRAPHICS.PICKUP_1.size());
                     can.drawBitmap(GRAPHICS.PICKUP_1.get(f), m_coords.x*GRAPHICS.scale-GRAPHICS.PICKUP_1.get(f).getWidth()/2, m_coords.y*GRAPHICS.scale-GRAPHICS.PICKUP_1.get(f).getHeight()/2, p);
-                    break;
+                    break; */
 
                 default:
-                    can.drawCircle(m_coords.x*GRAPHICS.scale, m_coords.y*GRAPHICS.scale, 3, p);
+                    if(b == null) can.drawCircle(m_coords.x*GRAPHICS.scale, m_coords.y*GRAPHICS.scale, 3, p);
+                    else can.drawBitmap(b, m_coords.x*GRAPHICS.scale-b.getWidth()/2, m_coords.y*GRAPHICS.scale-b.getHeight()/2, p);
                     break;
             }
 
@@ -96,15 +101,17 @@ public class Pickup implements IDrawable
 
     public static enum  PickupType
     {
-        none(1),
-        RoundYellowThingyThatLooksLikeSun(10),                   //Yes, such long type names are necessary. NECESSARY I SAY!
-        BlueIcyCrystalStuff(20);
+        none(1, ""),
+        RoundYellowThingyThatLooksLikeSun(10, "pickup_0"),                   //Yes, such long type names are necessary. NECESSARY I SAY!
+        BlueIcyCrystalStuff(20, "pickup_1");
 
         public int m_points;
+        public String m_iconId;
 
-        private PickupType(int p)
+        private PickupType(int p, String s)
         {
             m_points = p;
+            m_iconId = s;
         }
     }
 }

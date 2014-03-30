@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
+import com.robomobo.view.IconProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,7 +178,10 @@ public class Map implements IDrawable
 
             if (GameActivity.DEBUG) can.drawRect(m_boundaries, paint);
             else
-            can.drawBitmap(GRAPHICS.WALL, new Rect(0, 0, GRAPHICS.WALL.getWidth(), GRAPHICS.WALL.getHeight()), m_boundaries, paint);
+            {
+                Bitmap b = IconProvider.getIconBitmap("wall", 0);
+                can.drawBitmap(b, new Rect(0, 0, b.getWidth(), b.getHeight()), m_boundaries, paint);
+            }
 
             can.restore();
         }
