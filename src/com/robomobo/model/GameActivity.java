@@ -13,6 +13,7 @@ import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IconProvider;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -51,6 +52,12 @@ public class GameActivity extends Activity
     public void setDEBUG(View view)
     {
         DEBUG = ((ToggleButton) view).isChecked();
+    }
+
+    public void spawnPickup(View view)
+    {
+        Random r = new Random();
+        m_currentMap.registerObject(new Pickup(r.nextInt(100), r.nextInt(100), r.nextInt(2) == 0 ? Pickup.PickupType.RoundYellowThingyThatLooksLikeSun : Pickup.PickupType.BlueIcyCrystalStuff));
     }
 
     public void movePlayerL(View view)
