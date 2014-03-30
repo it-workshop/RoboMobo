@@ -15,15 +15,17 @@ public class Pickup implements IDrawable
     private int m_lifetime_ms; //lifetime in milliseconds
     private PointF m_coords;
     private Map m_mapReference;
+    public int mId;
 
-    public Pickup(float x, float y)
+    public Pickup(float x, float y, int id)
     {
         m_coords = new PointF(x, y);
+        mId = id;
     }
 
-    public Pickup(float x, float y, PickupType type)
+    public Pickup(float x, float y, int id, PickupType type)
     {
-        this(x, y);
+        this(x, y, id);
         m_type = type;
     }
 

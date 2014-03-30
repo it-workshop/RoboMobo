@@ -1,15 +1,13 @@
 package com.robomobo.model;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.robomobo.R;
-import com.robomobo.view.GRAPHICS;
+import com.robomobo.multiplayer.Networking;
 import com.robomobo.view.IconProvider;
 
 import java.util.ArrayList;
@@ -22,23 +20,26 @@ import java.util.Random;
  * Time: 11:47
  * To change this template use File | Settings | File Templates.
  */
-public class GameActivity extends Activity
+public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
 {
     public Map m_currentMap;
     public ArrayList<Player> m_players;
     private int currentPlayer = 0;
+    private Networking listeners;
 
     public static boolean DEBUG = false;
+    private boolean mIsMultiplayer;
 
     public void onCreate(Bundle savedInstanceState)
     {
         //GRAPHICS.init(this);
         IconProvider.init(this);
+        listeners = new Networking();
         m_currentMap = new Map();
         m_currentMap.registerObject(new Map.Obstacle(10, 20, 30, 40, 0));
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));
-        m_currentMap.registerObject(new Pickup(50, 40, Pickup.PickupType.RoundYellowThingyThatLooksLikeSun));
-        m_currentMap.registerObject(new Pickup(10, 60, Pickup.PickupType.BlueIcyCrystalStuff));
+        //m_currentMap.registerObject(new Pickup(50, 40, Pickup.PickupType.RoundYellowThingyThatLooksLikeSun));
+        //m_currentMap.registerObject(new Pickup(10, 60, Pickup.PickupType.BlueIcyCrystalStuff));
         m_players = new ArrayList<Player>();
         m_players.add(new LocalPlayer(60, 10));
         m_players.add(new Player(70, 30));
@@ -57,7 +58,7 @@ public class GameActivity extends Activity
     public void spawnPickup(View view)
     {
         Random r = new Random();
-        m_currentMap.registerObject(new Pickup(r.nextInt(100), r.nextInt(100), r.nextInt(2) == 0 ? Pickup.PickupType.RoundYellowThingyThatLooksLikeSun : Pickup.PickupType.BlueIcyCrystalStuff));
+        //m_currentMap.registerObject(new Pickup(r.nextInt(100), r.nextInt(100), r.nextInt(2) == 0 ? Pickup.PickupType.RoundYellowThingyThatLooksLikeSun : Pickup.PickupType.BlueIcyCrystalStuff));
     }
 
     public void movePlayerL(View view)
@@ -90,5 +91,28 @@ public class GameActivity extends Activity
         if(currentPlayer>0)
             currentPlayer--;
         ((TextView) findViewById(R.id.currentPlayer)).setText(String.valueOf(currentPlayer));
+    }
+
+    @Override
+    public void onSignInFailed()
+    {
+
+    }
+
+    @Override
+    public void onSignInSucceeded()
+    {
+        if(mIsMultiplayer)
+        {
+            Bundle criteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
+
+            RoomConfig.Builder builder = RoomConfig.builder(listeners)
+                    .setMessageReceivedListener(listeners)
+                    .setRoomStatusUpdateListener(listeners);
+            builder.setAutoMatchCriteria(criteria);
+            RoomConfig config = builder.build();
+
+            Games.RealTimeMultiplayer.create(getApiClient(), config);
+        }
     }
 }
