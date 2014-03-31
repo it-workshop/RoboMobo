@@ -9,7 +9,7 @@ import org.json.JSONObject;
  */
 public class MultiplayerMessageCodec
 {
-    public static String encodeSeed(int seed) throws JSONException
+    public static String sendSeed(int seed) throws JSONException
     {
         JSONObject json = new JSONObject();
         json.put("type", "seed");
@@ -17,14 +17,14 @@ public class MultiplayerMessageCodec
         return json.toString();
     }
 
-    public static String encodeReady() throws JSONException
+    public static String sendReady() throws JSONException
     {
         JSONObject json = new JSONObject();
         json.put("type", "ready");
         return json.toString();
     }
 
-    public static String encodeMove(float x, float y) throws JSONException
+    public static String sendMove(float x, float y) throws JSONException
     {
         JSONObject json = new JSONObject();
         json.put("type", "move");
@@ -33,7 +33,7 @@ public class MultiplayerMessageCodec
         return json.toString();
     }
 
-    public static String encodePickUp(int id, long timestamp) throws JSONException
+    public static String sendPickUp(int id, long timestamp) throws JSONException
     {
         JSONObject json = new JSONObject();
         json.put("type", "pickup");
@@ -42,7 +42,7 @@ public class MultiplayerMessageCodec
         return json.toString();
     }
 
-    public static String encodeSpawn(int id, long timestamp) throws JSONException
+    public static String sendSpawn(int id, long timestamp) throws JSONException
     {
         JSONObject json = new JSONObject();
         json.put("type", "spawn");
@@ -51,7 +51,7 @@ public class MultiplayerMessageCodec
         return json.toString();
     }
 
-    public static String encodeConfirm(int id) throws JSONException
+    public static String sendConfirm(int id) throws JSONException
     {
         JSONObject json = new JSONObject();
         json.put("type", "confirm_pickup");

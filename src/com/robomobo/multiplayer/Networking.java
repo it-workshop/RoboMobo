@@ -1,5 +1,7 @@
 package com.robomobo.multiplayer;
 
+import android.util.Log;
+import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.multiplayer.realtime.*;
 
 import java.util.List;
@@ -109,6 +111,9 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
     @Override
     public void onRoomConnected(int i, Room room)
     {
-
+        if(i == GamesStatusCodes.STATUS_OK)
+        {
+            Log.wtf("timestamp", Long.toString(System.currentTimeMillis()-room.getCreationTimestamp()));
+        }
     }
 }

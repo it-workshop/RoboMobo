@@ -111,4 +111,10 @@
             android:layout_alignParentRight="true"
             android:layout_alignLeft="@+id/toggleDebug"
             android:onClick="spawnPickup"/>
+    <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggleSignIn" android:layout_below="@+id/spawn_pickup" android:layout_alignParentRight="true"
+            android:layout_alignLeft="@+id/spawn_pickup" android:textOff="Signed out" android:textOn="Signed in"
+            android:onClick="toggleSignIn"/>
 </RelativeLayout>

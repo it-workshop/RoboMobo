@@ -28,7 +28,7 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
     private Networking listeners;
 
     public static boolean DEBUG = false;
-    private boolean mIsMultiplayer;
+    private boolean mIsMultiplayer = true;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -102,6 +102,8 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
     @Override
     public void onSignInSucceeded()
     {
+        ((ToggleButton) findViewById(R.id.toggleSignIn)).setChecked(true);
+
         if(mIsMultiplayer)
         {
             Bundle criteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
@@ -113,6 +115,18 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
             RoomConfig config = builder.build();
 
             Games.RealTimeMultiplayer.create(getApiClient(), config);
+        }
+    }
+
+    public void toggleSignIn(View view)
+    {
+        if(((ToggleButton) view).isChecked())
+        {
+            beginUserInitiatedSignIn();
+        }
+        else
+        {
+            signOut();
         }
     }
 }
