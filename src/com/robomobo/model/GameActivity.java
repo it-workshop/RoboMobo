@@ -9,8 +9,8 @@ import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.robomobo.R;
 import com.robomobo.multiplayer.Networking;
 import com.robomobo.view.IconProvider;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -23,8 +23,8 @@ import java.util.Random;
 public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
 {
     public Map m_currentMap;
-    public ArrayList<Player> m_players;
-    private int currentPlayer = 0;
+    public HashMap<String, Player> m_players;
+    public String currentPlayer;
     private Networking listeners;
 
     public static boolean DEBUG = false;
@@ -32,19 +32,14 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
 
     public void onCreate(Bundle savedInstanceState)
     {
+        super.onCreate(savedInstanceState);
         //GRAPHICS.init(this);
         IconProvider.init(this);
-        listeners = new Networking();
+
         m_currentMap = new Map();
         m_currentMap.registerObject(new Map.Obstacle(10, 20, 30, 40, 0));
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));
-        //m_currentMap.registerObject(new Pickup(50, 40, Pickup.PickupType.RoundYellowThingyThatLooksLikeSun));
-        //m_currentMap.registerObject(new Pickup(10, 60, Pickup.PickupType.BlueIcyCrystalStuff));
-        m_players = new ArrayList<Player>();
-        m_players.add(new LocalPlayer(60, 10));
-        m_players.add(new Player(70, 30));
-        m_players.add(new Player(38, 73));
-        super.onCreate(savedInstanceState);
+        listeners = new Networking(getApiClient(), this);
         setContentView(R.layout.layout_ingame);
 
         ((ToggleButton) findViewById(R.id.toggleDebug)).setChecked(DEBUG);
@@ -63,34 +58,22 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
 
     public void movePlayerL(View view)
     {
-        m_players.get(currentPlayer).moveRelative(-1, 0, m_currentMap);
+        m_players.get(listeners.mSelfId).moveRelative(-1, 0, m_currentMap);
     }
 
     public void movePlayerR(View view)
     {
-        m_players.get(currentPlayer).moveRelative(1, 0, m_currentMap);
+        m_players.get(listeners.mSelfId).moveRelative(1, 0, m_currentMap);
     }
 
     public void movePlayerU(View view)
     {
-        m_players.get(currentPlayer).moveRelative(0, -1, m_currentMap);
+        m_players.get(listeners.mSelfId).moveRelative(0, -1, m_currentMap);
 	}
 
     public void movePlayerD(View view)
     {
-        m_players.get(currentPlayer).moveRelative(0, 1, m_currentMap);
-    }
-    public void nextPlayer(View view)
-    {
-        if(currentPlayer<m_players.size()-1) currentPlayer++;
-        ((TextView) findViewById(R.id.currentPlayer)).setText(String.valueOf(currentPlayer));
-    }
-
-    public void prevPlayer(View view)
-    {
-        if(currentPlayer>0)
-            currentPlayer--;
-        ((TextView) findViewById(R.id.currentPlayer)).setText(String.valueOf(currentPlayer));
+        m_players.get(listeners.mSelfId).moveRelative(0, 1, m_currentMap);
     }
 
     @Override

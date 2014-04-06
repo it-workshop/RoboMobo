@@ -12,6 +12,7 @@ import com.robomobo.model.Map;
 import com.robomobo.model.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Roman on 10.01.14.
@@ -20,7 +21,7 @@ public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Call
 {
     private ThreadDrawIngame m_drawThread;
     private Map m_currentMap;
-    private ArrayList<Player> m_players;
+    private HashMap<String, Player> m_players;
     public float m_scale;
 
     public SurfaceViewIngame(Context context, AttributeSet attrs)
@@ -36,7 +37,7 @@ public class SurfaceViewIngame extends SurfaceView implements SurfaceHolder.Call
     {
         super.draw(canvas);
         m_currentMap.draw(canvas, 0);
-        for(Player player : m_players)
+        for(Player player : m_players.values())
             player.draw(canvas, 0);
     }
 
