@@ -1,16 +1,13 @@
 package com.robomobo.model;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.robomobo.R;
-import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IconProvider;
+import com.robomobo.view.ViewJoystick;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,7 +19,7 @@ import java.util.Random;
  * Time: 11:47
  * To change this template use File | Settings | File Templates.
  */
-public class GameActivity extends Activity
+public class GameActivity extends Activity implements ViewJoystick.OnJoystickMovedHandler
 {
     public Map m_currentMap;
     public ArrayList<Player> m_players;
@@ -90,5 +87,12 @@ public class GameActivity extends Activity
         if(currentPlayer>0)
             currentPlayer--;
         ((TextView) findViewById(R.id.currentPlayer)).setText(String.valueOf(currentPlayer));
+    }
+
+    @Override
+    public void onMoved(ViewJoystick source, int direction, float strength)
+    {
+        Player p = this.m_players.get(this.currentPlayer);
+        p.moveRelative((float)(strength / 40f * Math.cos(Math.toRadians(direction))), (float)(strength / 40f * Math.sin(Math.toRadians(direction))), this.m_currentMap);
     }
 }

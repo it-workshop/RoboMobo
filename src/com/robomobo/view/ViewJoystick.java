@@ -13,23 +13,25 @@ import android.view.View;
  */
 public class ViewJoystick extends View
 {
+    private OnJoystickMovedHandler movementHandler;
     private int direction = 0;
     private float strength = 0;
 
     public ViewJoystick(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public ViewJoystick(Context context)
     {
         super(context);
-        init();
+        init(context);
     }
 
-    private void init()
+    private void init(Context context)
     {
+        if(context instanceof OnJoystickMovedHandler) this.movementHandler = (OnJoystickMovedHandler) context;
         setWillNotDraw(false);
     }
 
@@ -73,14 +75,16 @@ public class ViewJoystick extends View
 
             float f = (float) Math.sqrt(Math.pow(moe.getX() - (this.getWidth() / 2f), 2) + Math.pow(moe.getY() - (this.getHeight() / 2f), 2));
             this.strength = Math.min(f, ((this.getWidth() + this.getHeight()) / 8));
-            this.invalidate();
+
+            if(this.movementHandler != null) this.movementHandler.onMoved(this, direction, strength);
+            //this.invalidate();
         }
 
         if(moe.getAction() == MotionEvent.ACTION_UP)
         {
             this.strength = 0;
             this.direction = 0;
-            this.invalidate();
+            //this.invalidate();
         }
         return true;
     }
@@ -112,4 +116,8 @@ public class ViewJoystick extends View
         return 100;
     }
 
+    public static interface OnJoystickMovedHandler
+    {
+        public abstract void onMoved(ViewJoystick source, int direction, float strength);
+    }
 }
