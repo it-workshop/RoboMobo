@@ -91,8 +91,6 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
     public void onConnectedToRoom(Room room)
     {
         mRoomId = room.getRoomId();
-        Random r = new Random();
-        mActivity.m_players.put(mSelfId, new LocalPlayer(r.nextFloat()*100, r.nextFloat()*100)); //TODO: spawn points
     }
 
     @Override
@@ -165,6 +163,8 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
                     break;
                 }
             }
+            Random r = new Random();
+            mActivity.m_players.put(mSelfId, new LocalPlayer(r.nextFloat()*100, r.nextFloat()*100)); //TODO: spawn points
             mParticipantIds = room.getParticipantIds();
             mRoomSize = mParticipantIds.size();
             int seed = (new Random()).nextInt();
