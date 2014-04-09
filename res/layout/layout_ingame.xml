@@ -9,8 +9,8 @@
         >
 
     <view
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             class="com.robomobo.view.SurfaceViewIngame"
             android:id="@+id/view"
             android:layout_alignParentTop="true"
@@ -111,4 +111,13 @@
             android:layout_alignParentRight="true"
             android:layout_alignLeft="@+id/toggleDebug"
             android:onClick="spawnPickup"/>
+
+    <view
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            class="com.robomobo.view.ViewJoystick"
+            android:id="@+id/view2"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="100dp"/>
 </RelativeLayout>
