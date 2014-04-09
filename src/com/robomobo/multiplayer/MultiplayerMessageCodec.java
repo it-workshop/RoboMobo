@@ -53,7 +53,7 @@ public class MultiplayerMessageCodec
         json.put("lifetime", lifetime);
         json.put("x", x);
         json.put("y", y);
-        json.put("type", type);
+        json.put("pickup_type", type);
         return json.toString().getBytes();
     }
 
@@ -120,7 +120,7 @@ public class MultiplayerMessageCodec
             }
             else if(type.equals("spawn"))
             {
-                networking.registerPickup(json.getInt("id"), json.getLong("timestamp"), json.getInt("lifetime"), (float) json.getDouble("x"), (float) json.getDouble("y"), json.getInt("type"));
+                networking.registerPickup(json.getInt("id"), json.getLong("timestamp"), json.getInt("lifetime"), (float) json.getDouble("x"), (float) json.getDouble("y"), json.getInt("pickup_type"));
             }
             else if(type.equals("confirm_pickup"))
             {
