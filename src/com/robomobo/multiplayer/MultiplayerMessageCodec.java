@@ -44,7 +44,7 @@ public class MultiplayerMessageCodec
         return json.toString().getBytes();
     }
 
-    public static byte[] encodeSpawn(int id, long timestamp) throws JSONException
+    public static byte[] encodeSpawn(int id, long timestamp, float x, float y) throws JSONException
     {
         JSONObject json = new JSONObject();
         json.put("type", "spawn");
@@ -61,11 +61,10 @@ public class MultiplayerMessageCodec
         return json.toString().getBytes();
     }
 
-    public static byte[] encodeTestSync(long timestamp) throws JSONException
+    public static byte[] encodeSync() throws JSONException
     {
         JSONObject json = new JSONObject();
-        json.put("type", "test_sync");
-        json.put("timestamp", timestamp);
+        json.put("type", "sync");
         return json.toString().getBytes();
     }
 
@@ -77,6 +76,20 @@ public class MultiplayerMessageCodec
         return json.toString().getBytes();
     }
 
+    public static byte[] encodeStart(long startTimestamp) throws JSONException
+    {
+        JSONObject json = new JSONObject();
+        json.put("type", "start");
+        json.put("timestamp", startTimestamp);
+        return json.toString().getBytes();
+    }
+    public static byte[] encodeSelf() throws JSONException
+    {
+        JSONObject json = new JSONObject();
+        json.put("type", "self");
+        return json.toString().getBytes();
+    }
+
     public static void decode(RealTimeMessage realTimeMessage, Networking networking)
     {
         JSONObject json;
@@ -84,13 +97,14 @@ public class MultiplayerMessageCodec
         {
             json = new JSONObject(new String(realTimeMessage.getMessageData()));
             String type = json.getString("type");
+            Log.d("Multiplayer", "Incoming message, type: " + type);
             if(type.equals("seed"))
             {
                 networking.addSeed(json.getInt("seed"));
             }
             else if(type.equals("ready"))
             {
-                //TODO: count ready players
+                Host.playerReady();
             }
             else if(type.equals("move"))
             {
@@ -108,13 +122,21 @@ public class MultiplayerMessageCodec
             {
                 //TODO: pick up confirmation
             }
-            else if(type.equals("test_sync"))
+            else if(type.equals("sync"))
             {
                 networking.setTimestamp(realTimeMessage.getSenderParticipantId());
             }
             else if(type.equals("ping"))
             {
-                networking.pingCorrection(json.getInt("ping"));
+                networking.pingCorrection(json.getInt("ping"), realTimeMessage.getSenderParticipantId());
+            }
+            else if(type.equals("start"))
+            {
+                networking.startTimer(json.getLong("timestamp"));
+            }
+            else if(type.equals("self"))
+            {
+                //Do nothing, it's a search for self ID
             }
             else
             {
@@ -127,4 +149,7 @@ public class MultiplayerMessageCodec
             return;
         }
     }
+
+
+
 }

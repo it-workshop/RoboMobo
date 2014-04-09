@@ -2,10 +2,8 @@ package com.robomobo.multiplayer;
 
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.robomobo.model.Map;
 import com.robomobo.model.Pickup;
 import org.json.JSONException;
@@ -21,33 +19,66 @@ public class Host
     private static Map mMap;
     private static String mRoomId;
     private static GoogleApiClient mClient;
-    public static int lastPickupId = 0;
+    public static int mLastPickupId = 0;
     public static boolean mInitialized = false;
+    private static int mNotReady;
+    private static Networking mNetworking;
+    private static boolean mSpawning = false;
 
     public static void init(Networking networking)
     {
+        Log.d("Multiplayer", "Host initializing");
         mInitialized = true;
-        Toast.makeText(networking.mActivity, "Host", Toast.LENGTH_LONG).show();
+        mNetworking = networking;
         mMap = networking.mActivity.m_currentMap;
         mRandom = new Random();
         mRoomId = networking.mRoomId;
         mClient = networking.mClient;
-        Log.d("host", "host");
+        networking.mCreationTimestamp = System.currentTimeMillis();
         try
         {
-            Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeTestSync(networking.mCreationTimestamp = System.currentTimeMillis()), mRoomId);
+            Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeSync(), mRoomId);
         } catch (JSONException e)
         {
             e.printStackTrace();
         }
-
+        mNotReady = networking.mRoomSize-1;
         //spawnTimer();
     }
 
-    public static void spawnTimer()
+    public static void deinit()
     {
-        mMap.registerObject(new Pickup(mRandom.nextInt(100), mRandom.nextInt(100), ++lastPickupId, mRandom.nextInt(2) == 0 ? Pickup.PickupType.RoundYellowThingyThatLooksLikeSun : Pickup.PickupType.BlueIcyCrystalStuff));
-        //Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodePickUp(lastPickupId, ))
+        mInitialized = false;
+        stopSpawn();
+    }
+
+    public static void startSpawn()
+    {
+        Log.d("Multiplayer", "Start spawning");
+        mSpawning = true;
+        spawnTimer();
+    }
+
+    public static void stopSpawn()
+    {
+        Log.d("Multiplayer", "Stop spawning");
+        mSpawning = false;
+    }
+
+    private static void spawnTimer()
+    {
+        if(!mSpawning)
+            return;
+        float x = mRandom.nextFloat()*mMap.getWidth();
+        float y = mRandom.nextFloat()*mMap.getHeight();
+        mMap.registerObject(new Pickup(x, y, ++mLastPickupId, mRandom.nextInt(2) == 0 ? Pickup.PickupType.RoundYellowThingyThatLooksLikeSun : Pickup.PickupType.BlueIcyCrystalStuff));
+        /*try
+        {
+            Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeSpawn(mLastPickupId, System.currentTimeMillis()-mNetworking.mCreationTimestamp, x, y, type), mRoomId);
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+        }*/
         int spawn = mRandom.nextInt(15000) + 5000;
         new CountDownTimer(spawn, spawn + 1)
         {
@@ -63,5 +94,22 @@ public class Host
                 spawnTimer();
             }
         }.start();
+    }
+
+    public static void playerReady()
+    {
+        if(--mNotReady==0)
+        {
+            Log.d("Multiplayer", "All players ready");
+            try
+            {
+                long startTimestamp = System.currentTimeMillis()-mNetworking.mCreationTimestamp+10000;
+                Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeStart(startTimestamp), mRoomId);
+                mNetworking.startTimer(startTimestamp);
+            } catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.widget.ToggleButton;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.robomobo.R;
+import com.robomobo.multiplayer.Host;
 import com.robomobo.multiplayer.Networking;
 import com.robomobo.view.IconProvider;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
     public HashMap<String, Player> m_players;
     public String currentPlayer;
     private Networking listeners;
-
     public static boolean DEBUG = false;
     private boolean mIsMultiplayer = true;
 
@@ -109,6 +109,11 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
         }
         else
         {
+            if(Host.mInitialized)
+                Host.stopSpawn();
+            m_players.clear();
+            m_currentMap.m_pickups.clear();
+            Games.RealTimeMultiplayer.leave(getApiClient(), listeners, listeners.mRoomId);
             signOut();
         }
     }

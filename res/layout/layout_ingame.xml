@@ -76,31 +76,6 @@
             android:id="@+id/toggleDebug" android:layout_alignParentTop="true"
             android:layout_alignParentRight="true" android:textOff="Debug mode OFF"
             android:textOn="Debug mode ON" android:onClick="setDEBUG"/>
-            
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Next player"
-            android:id="@+id/next"
-            android:layout_alignParentBottom="true" android:layout_alignParentRight="true"
-            android:onClick="nextPlayer"/>
-            
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Prev player"
-            android:id="@+id/prev"
-            android:layout_alignParentBottom="true" android:layout_toLeftOf="@+id/next"
-            android:onClick="prevPlayer"/>
-            
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="0"
-            android:id="@+id/currentPlayer"
-            android:layout_above="@+id/next" android:layout_alignParentRight="true"
-            />
 
     <Button
             android:layout_width="wrap_content"
@@ -121,6 +96,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/timestamp" android:layout_above="@+id/currentPlayer"
-            android:layout_alignRight="@+id/currentPlayer"/>
+            android:id="@+id/countdown" android:layout_centerVertical="true" android:layout_centerHorizontal="true"
+            android:textColor="#ff0000" android:textSize="64sp"/>
 </RelativeLayout>
