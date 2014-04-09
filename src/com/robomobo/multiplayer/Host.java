@@ -71,14 +71,18 @@ public class Host
             return;
         float x = mRandom.nextFloat()*mMap.getWidth();
         float y = mRandom.nextFloat()*mMap.getHeight();
-        mMap.registerObject(new Pickup(x, y, ++mLastPickupId, mRandom.nextInt(2) == 0 ? Pickup.PickupType.RoundYellowThingyThatLooksLikeSun : Pickup.PickupType.BlueIcyCrystalStuff));
-        /*try
+        int type = mRandom.nextInt(2);
+        long timestamp = System.currentTimeMillis() - mNetworking.mCreationTimestamp;
+        int lifetime = mRandom.nextInt(15000)+5000;
+        mNetworking.registerPickup(++mLastPickupId, timestamp, lifetime, x, y, type);
+        mMap.registerObject(new Pickup(x, y, ++mLastPickupId, lifetime, Pickup.PickupType.getElementFromID(type)));
+        try
         {
-            Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeSpawn(mLastPickupId, System.currentTimeMillis()-mNetworking.mCreationTimestamp, x, y, type), mRoomId);
+            Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeSpawn(mLastPickupId, System.currentTimeMillis()-mNetworking.mCreationTimestamp, lifetime, x, y, type), mRoomId);
         } catch (JSONException e)
         {
             e.printStackTrace();
-        }*/
+        }
         int spawn = mRandom.nextInt(15000) + 5000;
         new CountDownTimer(spawn, spawn + 1)
         {

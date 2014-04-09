@@ -44,12 +44,16 @@ public class MultiplayerMessageCodec
         return json.toString().getBytes();
     }
 
-    public static byte[] encodeSpawn(int id, long timestamp, float x, float y) throws JSONException
+    public static byte[] encodeSpawn(int id, long timestamp, int lifetime, float x, float y, int type) throws JSONException
     {
         JSONObject json = new JSONObject();
         json.put("type", "spawn");
         json.put("id", id);
         json.put("timestamp", timestamp);
+        json.put("lifetime", lifetime);
+        json.put("x", x);
+        json.put("y", y);
+        json.put("type", type);
         return json.toString().getBytes();
     }
 
@@ -116,7 +120,7 @@ public class MultiplayerMessageCodec
             }
             else if(type.equals("spawn"))
             {
-                //TODO: new pickup registration
+                networking.registerPickup(json.getInt("id"), json.getLong("timestamp"), json.getInt("lifetime"), (float) json.getDouble("x"), (float) json.getDouble("y"), json.getInt("type"));
             }
             else if(type.equals("confirm_pickup"))
             {

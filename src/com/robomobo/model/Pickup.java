@@ -13,19 +13,21 @@ public class Pickup implements IDrawable
 {
     public PickupType m_type = PickupType.none;
     private int m_lifetime_ms; //lifetime in milliseconds
+    private int mFullLifetime;
     private PointF m_coords;
     private Map m_mapReference;
     public int mId;
 
-    public Pickup(float x, float y, int id)
+    public Pickup(float x, float y, int id, int lifetime)
     {
         m_coords = new PointF(x, y);
         mId = id;
+        mFullLifetime = lifetime;
     }
 
-    public Pickup(float x, float y, int id, PickupType type)
+    public Pickup(float x, float y, int id, int lifetime, PickupType type)
     {
-        this(x, y, id);
+        this(x, y, id, lifetime);
         m_type = type;
     }
 
@@ -68,7 +70,7 @@ public class Pickup implements IDrawable
     {
         m_mapReference = map;
 
-        new CountDownTimer(20000, 1)
+        new CountDownTimer(mFullLifetime, 1)
         {
             @Override
             public void onTick(long millisUntilFinished)

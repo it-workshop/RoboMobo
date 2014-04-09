@@ -13,6 +13,7 @@ import com.google.android.gms.games.multiplayer.realtime.*;
 import com.robomobo.R;
 import com.robomobo.model.GameActivity;
 import com.robomobo.model.LocalPlayer;
+import com.robomobo.model.Pickup;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -244,5 +245,10 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
                     Host.startSpawn();
             }
         }.start();
+    }
+
+    public void registerPickup(int id, long timestamp, int lifetime, float x, float y, int type)
+    {
+        mActivity.m_currentMap.registerObject(new Pickup(x, y, id, (int) (lifetime-(timestamp-(System.currentTimeMillis()-mCreationTimestamp))), Pickup.PickupType.getElementFromID(type)));
     }
 }
