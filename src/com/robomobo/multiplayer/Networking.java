@@ -60,7 +60,7 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
     @Override
     public void onRoomAutoMatching(Room room)
     {
-
+        mRoomId = room.getRoomId();
     }
 
     @Override

@@ -58,22 +58,22 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
 
     public void movePlayerL(View view)
     {
-        m_players.get(listeners.mSelfId).moveRelative(-1, 0);
+        ((LocalPlayer) m_players.get(listeners.mSelfId)).moveRelative(-1, 0, m_currentMap, listeners);
     }
 
     public void movePlayerR(View view)
     {
-        m_players.get(listeners.mSelfId).moveRelative(1, 0);
+        ((LocalPlayer) m_players.get(listeners.mSelfId)).moveRelative(1, 0, m_currentMap, listeners);
     }
 
     public void movePlayerU(View view)
     {
-        m_players.get(listeners.mSelfId).moveRelative(0, -1);
+        ((LocalPlayer) m_players.get(listeners.mSelfId)).moveRelative(0, -1, m_currentMap, listeners);
 	}
 
     public void movePlayerD(View view)
     {
-        m_players.get(listeners.mSelfId).moveRelative(0, 1);
+        ((LocalPlayer) m_players.get(listeners.mSelfId)).moveRelative(0, 1, m_currentMap, listeners);
     }
 
     @Override
