@@ -164,7 +164,7 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
                 }
             }
             Random r = new Random();
-            mActivity.m_players.put(mSelfId, new LocalPlayer(r.nextFloat()*100, r.nextFloat()*100)); //TODO: spawn points
+            mActivity.m_players.put(mSelfId, new LocalPlayer(r.nextFloat()*100, r.nextFloat()*100, this)); //TODO: spawn points
             mParticipantIds = room.getParticipantIds();
             mRoomSize = mParticipantIds.size();
             int seed = (new Random()).nextInt();
@@ -250,5 +250,22 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
     public void registerPickup(int id, long timestamp, int lifetime, float x, float y, int type)
     {
         mActivity.m_currentMap.registerObject(new Pickup(x, y, id, (int) (lifetime-(timestamp-(System.currentTimeMillis()-mCreationTimestamp))), Pickup.PickupType.getElementFromID(type)));
+    }
+
+    public void movePlayer(String id, float x, float y)
+    {
+        mActivity.m_players.get(id).move(x, y);
+    }
+
+    public void moveSelf(float x, float y)
+    {
+        try
+        {
+            Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeMove(x, y), mRoomId);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

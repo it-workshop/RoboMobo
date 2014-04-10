@@ -1,6 +1,9 @@
 package com.robomobo.model;
 
 import android.graphics.*;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
+import com.robomobo.multiplayer.Networking;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IconProvider;
 
@@ -23,7 +26,7 @@ public class LocalPlayer extends Player
 
     public static final float PICKUP_PICK_UP_RANGE = 3.0f;
 
-    public LocalPlayer(float initX, float initY)
+    public LocalPlayer(float initX, float initY, Networking networking)
     {
         m_id = IdGenerator.getInstance().generatePlayerId();
         m_pos = new PointF(initX, initY);
@@ -33,9 +36,11 @@ public class LocalPlayer extends Player
         m_wallHitPos = new float[2];
         m_wallHitPos[0] = 0;
         m_wallHitPos[1] = 0;
+
+        networking.moveSelf(initX, initY);
     }
 
-    public void move(float x, float y, Map map)
+    public void move(float x, float y, Map map, Networking networking)
     {
         float[] direction = new float[2];
         float distance = (float) Math.sqrt(Math.pow(x - m_pos.x, 2) + Math.pow(y - m_pos.y, 2));
@@ -80,11 +85,21 @@ public class LocalPlayer extends Player
             }
         }
         m_pos.set(x, y);
+
+        if(m_wallHit)
+            networking.moveSelf(m_wallHitPos[0], m_wallHitPos[1]);
+        else
+            networking.moveSelf(x, y);
     }
     
-    public void move(PointF pos, Map map)
+    public void move(PointF pos, Map map, Networking networking)
     {
-        move(pos.x, pos.y, map);
+        move(pos.x, pos.y, map, networking);
+    }
+
+    public void moveRelative(float x, float y, Map map, Networking networking)
+    {
+        this.move(this.m_pos.x + x, this.m_pos.y + y, map, networking);
     }
 
     @Override

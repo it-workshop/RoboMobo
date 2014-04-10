@@ -112,7 +112,7 @@ public class MultiplayerMessageCodec
             }
             else if(type.equals("move"))
             {
-                //TODO: move remote players
+                networking.movePlayer(realTimeMessage.getSenderParticipantId(), (float) json.getDouble("x"), (float) json.getDouble("y"));
             }
             else if(type.equals("pickup"))
             {
