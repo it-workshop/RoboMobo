@@ -2,7 +2,6 @@ package com.robomobo.model;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
@@ -10,7 +9,7 @@ import com.robomobo.R;
 import com.robomobo.multiplayer.Host;
 import com.robomobo.multiplayer.Networking;
 import com.robomobo.view.IconProvider;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.Random;
 
@@ -25,8 +24,7 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
 {
     public Map m_currentMap;
     public HashMap<String, Player> m_players;
-    public String currentPlayer;
-    private Networking listeners;
+    public Networking mNetworking;
     public static boolean DEBUG = false;
     private boolean mIsMultiplayer = true;
 
@@ -36,10 +34,10 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
         //GRAPHICS.init(this);
         IconProvider.init(this);
 
-        m_currentMap = new Map();
+        m_currentMap = new Map(this);
         m_currentMap.registerObject(new Map.Obstacle(10, 20, 30, 40, 0));
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));
-        listeners = new Networking(getApiClient(), this);
+        mNetworking = new Networking(getApiClient(), this);
         setContentView(R.layout.layout_ingame);
 
         ((ToggleButton) findViewById(R.id.toggleDebug)).setChecked(DEBUG);
@@ -58,22 +56,22 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
 
     public void movePlayerL(View view)
     {
-        ((LocalPlayer) m_players.get(listeners.mSelfId)).moveRelative(-1, 0, m_currentMap, listeners);
+        ((LocalPlayer) m_players.get(mNetworking.mSelfId)).moveRelative(-1, 0, m_currentMap, mNetworking);
     }
 
     public void movePlayerR(View view)
     {
-        ((LocalPlayer) m_players.get(listeners.mSelfId)).moveRelative(1, 0, m_currentMap, listeners);
+        ((LocalPlayer) m_players.get(mNetworking.mSelfId)).moveRelative(1, 0, m_currentMap, mNetworking);
     }
 
     public void movePlayerU(View view)
     {
-        ((LocalPlayer) m_players.get(listeners.mSelfId)).moveRelative(0, -1, m_currentMap, listeners);
+        ((LocalPlayer) m_players.get(mNetworking.mSelfId)).moveRelative(0, -1, m_currentMap, mNetworking);
 	}
 
     public void movePlayerD(View view)
     {
-        ((LocalPlayer) m_players.get(listeners.mSelfId)).moveRelative(0, 1, m_currentMap, listeners);
+        ((LocalPlayer) m_players.get(mNetworking.mSelfId)).moveRelative(0, 1, m_currentMap, mNetworking);
     }
 
     @Override
@@ -91,9 +89,9 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
         {
             Bundle criteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
 
-            RoomConfig.Builder builder = RoomConfig.builder(listeners)
-                    .setMessageReceivedListener(listeners)
-                    .setRoomStatusUpdateListener(listeners);
+            RoomConfig.Builder builder = RoomConfig.builder(mNetworking)
+                    .setMessageReceivedListener(mNetworking)
+                    .setRoomStatusUpdateListener(mNetworking);
             builder.setAutoMatchCriteria(criteria);
             RoomConfig config = builder.build();
 
@@ -113,7 +111,7 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity
                 Host.stopSpawn();
             m_players.clear();
             m_currentMap.m_pickups.clear();
-            Games.RealTimeMultiplayer.leave(getApiClient(), listeners, listeners.mRoomId);
+            Games.RealTimeMultiplayer.leave(getApiClient(), mNetworking, mNetworking.mRoomId);
             signOut();
         }
     }

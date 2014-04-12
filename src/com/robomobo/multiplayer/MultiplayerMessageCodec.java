@@ -3,6 +3,8 @@ package com.robomobo.multiplayer;
 import android.util.Log;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
+import com.robomobo.model.Pickup;
+import com.robomobo.model.Player;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -94,6 +96,14 @@ public class MultiplayerMessageCodec
         return json.toString().getBytes();
     }
 
+    public static byte[] encodeScore(int id) throws JSONException
+    {
+        JSONObject json = new JSONObject();
+        json.put("type", "score");
+        json.put("id", id);
+        return json.toString().getBytes();
+    }
+
     public static void decode(RealTimeMessage realTimeMessage, Networking networking)
     {
         JSONObject json;
@@ -116,7 +126,15 @@ public class MultiplayerMessageCodec
             }
             else if(type.equals("pickup"))
             {
-                //TODO: pick up synchronisation
+                int id = json.getInt("id");
+                for(Pickup pickup : networking.mActivity.m_currentMap.m_pickups)
+                {
+                    if(pickup.mId==id)
+                    {
+                        pickup.onPickedUp(realTimeMessage.getSenderParticipantId(), json.getLong("timestamp"));
+                        break;
+                    }
+                }
             }
             else if(type.equals("spawn"))
             {
@@ -124,7 +142,15 @@ public class MultiplayerMessageCodec
             }
             else if(type.equals("confirm_pickup"))
             {
-                //TODO: pick up confirmation
+                int id = json.getInt("id");
+                for(Pickup pickup : networking.mActivity.m_currentMap.m_pickups)
+                {
+                    if(pickup.mId==id)
+                    {
+                        pickup.onConfirmation();
+                        break;
+                    }
+                }
             }
             else if(type.equals("sync"))
             {
@@ -141,6 +167,18 @@ public class MultiplayerMessageCodec
             else if(type.equals("self"))
             {
                 //Do nothing, it's a search for self ID
+            }
+            else if(type.equals("score"))
+            {
+                int id = json.getInt("id");
+                for(Pickup pickup : networking.mActivity.m_currentMap.m_pickups)
+                {
+                    if(pickup.mId==id)
+                    {
+                        pickup.score(realTimeMessage.getSenderParticipantId());
+                        break;
+                    }
+                }
             }
             else
             {

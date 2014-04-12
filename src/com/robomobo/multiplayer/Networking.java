@@ -29,13 +29,30 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
     public String mSelfId;
     ArrayList<String> mParticipantIds;
     public String mRoomId;
-    GoogleApiClient mClient;
+    public GoogleApiClient mClient;
     long mSeed = 0;
     int mSeedCounter;
     GameActivity mActivity;
     boolean mIsHost = false;
-    long mCreationTimestamp;
-    int mRoomSize;
+    public long mCreationTimestamp;
+    public int mRoomSize;
+
+    private class ReliableMessageCallback implements RealTimeMultiplayer.ReliableMessageSentCallback
+    {
+        byte[] mMessage;
+
+        public ReliableMessageCallback(byte[] message)
+        {
+            mMessage = message;
+        }
+
+        @Override
+        public void onRealTimeMessageSent(int statusCode, int tokenId, String participantId)
+        {
+            if(statusCode==GamesStatusCodes.STATUS_REAL_TIME_MESSAGE_SEND_FAILED)
+                Games.RealTimeMultiplayer.sendReliableMessage(mClient, new ReliableMessageCallback(mMessage), mMessage, mRoomId, participantId);
+        }
+    }
 
     public Networking(GoogleApiClient client, GameActivity activity)
     {
@@ -267,5 +284,20 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
         {
             e.printStackTrace();
         }
+    }
+
+    public void reliableBroadcast(byte[] message)
+    {
+        for(String participantId : mParticipantIds)
+        {
+            if(participantId!=mSelfId)
+                Games.RealTimeMultiplayer.sendReliableMessage(mClient, new ReliableMessageCallback(message), message, mRoomId, participantId);
+        }
+    }
+
+    public void reliableMessage(byte[] message, String participantId)
+    {
+        if(participantId!=mSelfId)
+            Games.RealTimeMultiplayer.sendReliableMessage(mClient, new ReliableMessageCallback(message), message, mRoomId, participantId);
     }
 }

@@ -44,8 +44,8 @@ public class LocalPlayer extends Player
     {
         float[] direction = new float[2];
         float distance = (float) Math.sqrt(Math.pow(x - m_pos.x, 2) + Math.pow(y - m_pos.y, 2));
-        direction[0] = (float) ((x - m_pos.x) / distance);
-        direction[1] = (float) ((y - m_pos.y) / distance);
+        direction[0] = (x - m_pos.x) / distance;
+        direction[1] = (y - m_pos.y) / distance;
         m_direction = direction[0] > 0 ? Math.acos(-direction[1]) * 180 / Math.PI : 360 - Math.acos(-direction[1]) * 180 / Math.PI;
 
         if (!m_wallHit)

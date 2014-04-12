@@ -3,6 +3,7 @@ package com.robomobo.model;
 import android.graphics.*;
 import android.os.CountDownTimer;
 import android.util.Log;
+import com.robomobo.multiplayer.Networking;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
 import com.robomobo.view.IconProvider;
@@ -23,14 +24,16 @@ public class Map implements IDrawable
     public static final float DEFAULT_HEIGHT = 100.0f;
     private final float m_width;
     private final float m_height;
+    public GameActivity mActivity;
     public List<Obstacle> m_obstacles = new ArrayList<Obstacle>();
     public List<Pickup> m_pickups = new ArrayList<Pickup>();
     public List<IDrawable> m_drawables = new ArrayList<IDrawable>();
 
-    public Map(float width, float height)
+    public Map(float width, float height, GameActivity activity)
     {
         this.m_width = width;
         this.m_height = height;
+        mActivity = activity;
     }
 
     public float getWidth()
@@ -43,9 +46,9 @@ public class Map implements IDrawable
         return m_height;
     }
 
-    public Map()
+    public Map(GameActivity activity)
     {
-        this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this(DEFAULT_WIDTH, DEFAULT_HEIGHT, activity);
     }
 
     public void registerObject(Object obj)
