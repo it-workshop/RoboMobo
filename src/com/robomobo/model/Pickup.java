@@ -79,12 +79,12 @@ public class Pickup implements IDrawable
         m_mapReference = map;
         mPlayersNotConfirmed = m_mapReference.mActivity.mNetworking.mRoomSize-1;
 
-        new CountDownTimer(mFullLifetime, 1)
+        new CountDownTimer(mFullLifetime, 10)
         {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                m_lifetime_ms++;
+                m_lifetime_ms+=10;
             }
 
             @Override
