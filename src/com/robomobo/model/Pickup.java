@@ -66,12 +66,12 @@ public class Pickup implements IDrawable
     {
         m_mapReference = map;
 
-        new CountDownTimer(20000, 1)
+        new CountDownTimer(20000, 10)
         {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                m_lifetime_ms++;
+                m_lifetime_ms+=10;
             }
 
             @Override
@@ -101,17 +101,31 @@ public class Pickup implements IDrawable
 
     public static enum  PickupType
     {
-        none(1, ""),
-        RoundYellowThingyThatLooksLikeSun(10, "pickup_0"),                   //Yes, such long type names are necessary. NECESSARY I SAY!
-        BlueIcyCrystalStuff(20, "pickup_1");
+        none(-1, 1, ""),
+        RoundYellowThingyThatLooksLikeSun(0, 10, "pickup_0"),                   //Yes, such long type names are necessary. NECESSARY I SAY!
+        BlueIcyCrystalStuff(1, 20, "pickup_1");
 
         public int m_points;
         public String m_iconId;
+        public int m_Id;
 
-        private PickupType(int p, String s)
+        private PickupType(int id, int p, String s)
         {
+            m_Id = id;
             m_points = p;
             m_iconId = s;
+        }
+
+        public static PickupType getElementFromID(int id)
+        {
+            switch(id)
+            {
+                case -1: return none;
+                case 0: return RoundYellowThingyThatLooksLikeSun;
+                case 1: return BlueIcyCrystalStuff;
+            }
+
+            return null;
         }
     }
 }
