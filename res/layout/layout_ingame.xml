@@ -45,4 +45,13 @@
             android:layout_alignParentLeft="true" android:layout_alignParentTop="true" android:id="@+id/scores"
             android:gravity="bottom">
     </TableLayout>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Host"
+            android:id="@+id/host"
+            android:layout_marginLeft="412dp" android:layout_marginBottom="131dp"
+            android:layout_alignParentRight="true" android:layout_below="@+id/toggleSignIn"
+            android:visibility="invisible"/>
 </RelativeLayout>

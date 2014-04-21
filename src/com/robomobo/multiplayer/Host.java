@@ -2,8 +2,10 @@ package com.robomobo.multiplayer;
 
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.View;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.robomobo.R;
 import com.robomobo.model.Map;
 import com.robomobo.model.Pickup;
 import org.json.JSONException;
@@ -43,12 +45,14 @@ public class Host
             e.printStackTrace();
         }
         mNotReady = networking.mRoomSize-1;
+        mNetworking.mActivity.findViewById(R.id.host).setVisibility(View.VISIBLE);
         //spawnTimer();
     }
 
     public static void deinit()
     {
         mInitialized = false;
+        mNetworking.mActivity.findViewById(R.id.host).setVisibility(View.INVISIBLE);
         stopSpawn();
     }
 
@@ -75,7 +79,7 @@ public class Host
         long timestamp = System.currentTimeMillis() - mNetworking.mCreationTimestamp;
         int lifetime = mRandom.nextInt(15000)+5000;
         mNetworking.registerPickup(++mLastPickupId, timestamp, lifetime, x, y, type);
-        mMap.registerObject(new Pickup(x, y, ++mLastPickupId, lifetime, Pickup.PickupType.getElementFromID(type)));
+        mMap.registerObject(new Pickup(x, y, mLastPickupId, lifetime, Pickup.PickupType.getElementFromID(type)));
         try
         {
             mNetworking.reliableBroadcast(MultiplayerMessageCodec.encodeSpawn(mLastPickupId, System.currentTimeMillis()-mNetworking.mCreationTimestamp, lifetime, x, y, type));

@@ -16,10 +16,7 @@ import com.robomobo.model.LocalPlayer;
 import com.robomobo.model.Pickup;
 import org.json.JSONException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Всеволод on 30.03.2014.
@@ -48,8 +45,12 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
         @Override
         public void onRealTimeMessageSent(int statusCode, int tokenId, String participantId)
         {
+
             if(statusCode==GamesStatusCodes.STATUS_REAL_TIME_MESSAGE_SEND_FAILED)
+            {
+                Log.e("Networking", "Message delivery error " + new String(mMessage));
                 Games.RealTimeMultiplayer.sendReliableMessage(mClient, new ReliableMessageCallback(mMessage), mMessage, mRoomId, participantId);
+            }
         }
     }
 
@@ -181,6 +182,7 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
             }
             mActivity.updateScores();
             mParticipantIds = room.getParticipantIds();
+            Collections.sort(mParticipantIds);
             mRoomSize = mParticipantIds.size();
             int seed = (new Random()).nextInt();
             mSeed += seed;

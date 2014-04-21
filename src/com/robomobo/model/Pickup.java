@@ -2,6 +2,7 @@ package com.robomobo.model;
 
 import android.graphics.*;
 import android.os.CountDownTimer;
+import android.util.Log;
 import com.google.android.gms.games.Games;
 import com.robomobo.multiplayer.MultiplayerMessageCodec;
 import com.robomobo.multiplayer.Networking;
@@ -116,6 +117,7 @@ public class Pickup implements IDrawable
             e.printStackTrace();
         }
         m_mapReference.m_drawables.remove(this);
+        Log.d("Multiplayer", "Drawable removed");
     }
 
     public void onPickedUp(String participantId, long timestamp)
@@ -142,6 +144,7 @@ public class Pickup implements IDrawable
             mPickUpTimestamp = timestamp;
             mPickedUpParticipantId = participantId;
             m_mapReference.m_drawables.remove(this);
+            Log.d("Multiplayer", "Drawable removed " + mId);
             try
             {
                 m_mapReference.mActivity.mNetworking.reliableMessage(MultiplayerMessageCodec.encodeConfirm(mId), participantId);
@@ -156,7 +159,9 @@ public class Pickup implements IDrawable
     public void onRemoved()
     {
         m_mapReference.m_drawables.remove(this);
+        Log.d("Multiplayer", "Drawable removed " + mId);
         m_mapReference.m_pickups.remove(this);
+        Log.d("Multiplayer", "Pickup removed " + mId);
     }
 
     public void onConfirmation()
@@ -174,6 +179,7 @@ public class Pickup implements IDrawable
             m_mapReference.mActivity.m_players.get(m_mapReference.mActivity.mNetworking.mSelfId).addScore(m_type.m_points);
             m_mapReference.mActivity.updateScores();
             m_mapReference.m_pickups.remove(this);
+            Log.d("Multiplayer", "Pickup removed " + mId);
         }
     }
 
@@ -182,6 +188,7 @@ public class Pickup implements IDrawable
         m_mapReference.mActivity.m_players.get(senderParticipantId).addScore(m_type.m_points);
         m_mapReference.mActivity.updateScores();
         m_mapReference.m_pickups.remove(this);
+        Log.d("Multiplayer", "Pickup removed " + mId);
     }
 
     public static enum  PickupType
