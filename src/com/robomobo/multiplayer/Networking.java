@@ -33,7 +33,6 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
     long mSeed = 0;
     int mSeedCounter;
     GameActivity mActivity;
-    boolean mIsHost = false;
     public long mCreationTimestamp;
     public int mRoomSize;
 
@@ -58,8 +57,6 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
     {
         mClient = client;
         mActivity = activity;
-        mActivity.m_players = new HashMap<String, com.robomobo.model.Player>();
-
     }
 
     @Override
@@ -144,7 +141,7 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
     @Override
     public void onRoomCreated(int i, Room room)
     {
-
+        mRoomId = room.getRoomId();
     }
 
     @Override

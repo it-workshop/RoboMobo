@@ -52,13 +52,14 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
         m_currentMap = new Map(this);
         m_currentMap.registerObject(new Map.Obstacle(10, 20, 30, 40, 0));
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));
+        m_players = new HashMap<String, com.robomobo.model.Player>();
         mNetworking = new Networking(getApiClient(), this);
         setContentView(R.layout.layout_ingame);
 
         ((ToggleButton) findViewById(R.id.toggleDebug)).setChecked(DEBUG);
 
 
-        ((SurfaceViewIngame) findViewById(R.id.view)).setOnTouchListener(new View.OnTouchListener()
+        findViewById(R.id.view).setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent)
@@ -80,8 +81,9 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
                         {
                             if(m_lastPressedX == -1 || m_lastPressedY == -1) return;
 
-                            Player p = m_players.get(mNetworking.mSelfId);
-
+                            LocalPlayer p = (LocalPlayer) m_players.get(mNetworking.mSelfId);
+                            if(p == null)
+                                return;
 
                             double d = Math.atan((m_pressedX - m_lastPressedX)/(m_pressedY - m_lastPressedY));
                             if((m_pressedY - m_lastPressedY) < 0) d += Math.PI;
@@ -89,7 +91,7 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
 
                             float strength = (float) Math.sqrt(Math.pow(m_pressedX - m_lastPressedX, 2) + Math.pow(m_pressedY - m_lastPressedY, 2));
 
-                            p.moveRelative((float)(strength / 1000f * Math.cos(Math.toRadians(direction))), (float)(strength / 1000f * Math.sin(Math.toRadians(direction))));
+                            p.moveRelative((float)(strength / 1000f * Math.cos(Math.toRadians(direction))), (float)(strength / 1000f * Math.sin(Math.toRadians(direction))), m_currentMap, mNetworking);
                         }
 
                         @Override
@@ -115,32 +117,6 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
         DEBUG = ((ToggleButton) view).isChecked();
     }
 
-    public void spawnPickup(View view)
-    {
-        Random r = new Random();
-        //m_currentMap.registerObject(new Pickup(r.nextInt(100), r.nextInt(100), r.nextInt(2) == 0 ? Pickup.PickupType.RoundYellowThingyThatLooksLikeSun : Pickup.PickupType.BlueIcyCrystalStuff));
-    }
-
-    public void movePlayerL(View view)
-    {
-        ((LocalPlayer) m_players.get(mNetworking.mSelfId)).moveRelative(-1, 0, m_currentMap, mNetworking);
-    }
-
-    public void movePlayerR(View view)
-    {
-        ((LocalPlayer) m_players.get(mNetworking.mSelfId)).moveRelative(1, 0, m_currentMap, mNetworking);
-    }
-
-    public void movePlayerU(View view)
-    {
-        ((LocalPlayer) m_players.get(mNetworking.mSelfId)).moveRelative(0, -1, m_currentMap, mNetworking);
-	}
-
-    public void movePlayerD(View view)
-    {
-        ((LocalPlayer) m_players.get(mNetworking.mSelfId)).moveRelative(0, 1, m_currentMap, mNetworking);
-    }
-
     @Override
     public void onSignInFailed()
     {
@@ -154,6 +130,8 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
 
         if(mIsMultiplayer)
         {
+            mNetworking = new Networking(getApiClient(), this);
+
             Bundle criteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
 
             RoomConfig.Builder builder = RoomConfig.builder(mNetworking)
@@ -179,6 +157,7 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
             m_players.clear();
             m_currentMap.m_pickups.clear();
             Games.RealTimeMultiplayer.leave(getApiClient(), mNetworking, mNetworking.mRoomId);
+            mNetworking = null;
             signOut();
         }
     }
