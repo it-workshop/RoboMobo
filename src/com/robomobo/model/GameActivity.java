@@ -1,5 +1,9 @@
 package com.robomobo.model;
 
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import com.robomobo.view.IDrawable;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,12 +14,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.robomobo.R;
+import com.robomobo.multiplayer.Host;
+import com.robomobo.multiplayer.Networking;
+import com.robomobo.view.IconProvider;
 import com.robomobo.view.IDrawable;
 import com.robomobo.view.IconProvider;
 import com.robomobo.view.SurfaceViewIngame;
-
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -25,14 +33,15 @@ import java.util.Random;
  * Time: 11:47
  * To change this template use File | Settings | File Templates.
  */
-public class GameActivity extends Activity implements IDrawable
+public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity implements IDrawable
 {
     public Map m_currentMap;
-    public ArrayList<Player> m_players;
-    private int currentPlayer = 0;
-
+    public HashMap<String, Player> m_players;
+    public Networking mNetworking;
     public static boolean DEBUG = false;
-
+    private boolean mIsMultiplayer = true;
+    private TableLayout mScoresLayout;
+    private HashMap<String, TableRow> mScoresEntries;
 
     public float m_lastPressedX = -1;
     public float m_lastPressedY = -1;
@@ -41,25 +50,21 @@ public class GameActivity extends Activity implements IDrawable
 
     public void onCreate(Bundle savedInstanceState)
     {
+        super.onCreate(savedInstanceState);
         //GRAPHICS.init(this);
         IconProvider.init(this);
-        m_currentMap = new Map();
+
+        m_currentMap = new Map(this);
         m_currentMap.registerObject(new Map.Obstacle(10, 20, 30, 40, 0));
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));
-        m_currentMap.registerObject(new Pickup(50, 40, Pickup.PickupType.RoundYellowThingyThatLooksLikeSun));
-        m_currentMap.registerObject(new Pickup(10, 60, Pickup.PickupType.BlueIcyCrystalStuff));
-        m_currentMap.registerObject(this);
-        m_players = new ArrayList<Player>();
-        m_players.add(new LocalPlayer(60, 10));
-        m_players.add(new Player(70, 30));
-        m_players.add(new Player(38, 73));
-        super.onCreate(savedInstanceState);
+        m_players = new HashMap<String, com.robomobo.model.Player>();
+        mScoresEntries = new HashMap<String, TableRow>();
         setContentView(R.layout.layout_ingame);
+        mScoresLayout = (TableLayout) findViewById(R.id.scores);
 
         ((ToggleButton) findViewById(R.id.toggleDebug)).setChecked(DEBUG);
 
-
-        ((SurfaceViewIngame) findViewById(R.id.view)).setOnTouchListener(new View.OnTouchListener()
+        findViewById(R.id.view).setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent)
@@ -81,8 +86,9 @@ public class GameActivity extends Activity implements IDrawable
                         {
                             if(m_lastPressedX == -1 || m_lastPressedY == -1) return;
 
-                            Player p = m_players.get(currentPlayer);
-
+                            LocalPlayer p = (LocalPlayer) m_players.get(mNetworking.mSelfId);
+                            if(p == null)
+                                return;
 
                             double d = Math.atan((m_pressedX - m_lastPressedX)/(m_pressedY - m_lastPressedY));
                             if((m_pressedY - m_lastPressedY) < 0) d += Math.PI;
@@ -90,7 +96,7 @@ public class GameActivity extends Activity implements IDrawable
 
                             float strength = (float) Math.sqrt(Math.pow(m_pressedX - m_lastPressedX, 2) + Math.pow(m_pressedY - m_lastPressedY, 2));
 
-                            p.moveRelative((float)(strength / 1000f * Math.cos(Math.toRadians(direction))), (float)(strength / 1000f * Math.sin(Math.toRadians(direction))), m_currentMap);
+                            p.moveRelative((float)(strength / 1000f * Math.cos(Math.toRadians(direction))), (float)(strength / 1000f * Math.sin(Math.toRadians(direction))), m_currentMap, mNetworking);
                         }
 
                         @Override
@@ -116,42 +122,70 @@ public class GameActivity extends Activity implements IDrawable
         DEBUG = ((ToggleButton) view).isChecked();
     }
 
-    public void spawnPickup(View view)
+    @Override
+    public void onSignInFailed()
     {
-        Random r = new Random();
-        m_currentMap.registerObject(new Pickup(r.nextInt(100), r.nextInt(100), r.nextInt(2) == 0 ? Pickup.PickupType.RoundYellowThingyThatLooksLikeSun : Pickup.PickupType.BlueIcyCrystalStuff));
+
     }
 
-    public void movePlayerL(View view)
+    @Override
+    public void onSignInSucceeded()
     {
-        m_players.get(currentPlayer).moveRelative(-1, 0, m_currentMap);
+        ((ToggleButton) findViewById(R.id.toggleSignIn)).setChecked(true);
+
+        if(mIsMultiplayer)
+        {
+            mNetworking = new Networking(getApiClient(), this);
+
+            Bundle criteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
+
+            RoomConfig.Builder builder = RoomConfig.builder(mNetworking)
+                    .setMessageReceivedListener(mNetworking)
+                    .setRoomStatusUpdateListener(mNetworking);
+            builder.setAutoMatchCriteria(criteria);
+            RoomConfig config = builder.build();
+
+            Games.RealTimeMultiplayer.create(getApiClient(), config);
+        }
     }
 
-    public void movePlayerR(View view)
+    public void toggleSignIn(View view)
     {
-        m_players.get(currentPlayer).moveRelative(1, 0, m_currentMap);
+        if (((ToggleButton) view).isChecked())
+        {
+            beginUserInitiatedSignIn();
+        }
+        else
+        {
+            if (Host.mInitialized)
+                Host.stopSpawn();
+            m_players.clear();
+            m_currentMap.m_pickups.clear();
+            Games.RealTimeMultiplayer.leave(getApiClient(), mNetworking, mNetworking.mRoomId);
+            mNetworking = null;
+            mScoresEntries.clear();
+            mScoresLayout.removeAllViewsInLayout();
+            signOut();
+        }
     }
 
-    public void movePlayerU(View view)
+    public void updateScores()
     {
-        m_players.get(currentPlayer).moveRelative(0, -1, m_currentMap);
-	}
-
-    public void movePlayerD(View view)
-    {
-        m_players.get(currentPlayer).moveRelative(0, 1, m_currentMap);
-    }
-    public void nextPlayer(View view)
-    {
-        if(currentPlayer<m_players.size()-1) currentPlayer++;
-        ((TextView) findViewById(R.id.currentPlayer)).setText(String.valueOf(currentPlayer));
-    }
-
-    public void prevPlayer(View view)
-    {
-        if(currentPlayer>0)
-            currentPlayer--;
-        ((TextView) findViewById(R.id.currentPlayer)).setText(String.valueOf(currentPlayer));
+        for(String id : m_players.keySet())
+        {
+            TableRow entry;
+            if((entry = mScoresEntries.get(id))==null)
+            {
+                entry = (TableRow) View.inflate(this, R.layout.score_entry, null);
+                mScoresLayout.addView(entry);
+                mScoresEntries.put(id, entry);
+            }
+            TextView name = (TextView) entry.findViewById(R.id.name);
+            if(name.getText().equals(""))
+                name.setText(m_players.get(id).mName);
+            TextView score = (TextView) entry.findViewById(R.id.score);
+            score.setText(String.valueOf(m_players.get(id).getScore()));
+        }
     }
 
     @Override

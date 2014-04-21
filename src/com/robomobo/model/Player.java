@@ -16,6 +16,7 @@ public class Player implements IDrawable
     protected PointF m_pos;
     protected int m_score;
     protected int m_id;
+    protected String mName;
 
     public Player()
     {
@@ -42,13 +43,13 @@ public class Player implements IDrawable
         return new PointF(m_pos.x, m_pos.y);
     }
 
-    public void move(float x, float y, Map map)
+    public void move(float x, float y)
     {
         m_pos.set(x, y);
         //Log.wtf("player","x: "+posX+", y: "+posY);
     }
 
-    public void move(PointF pos, Map map)
+    public void move(PointF pos)
     {
         m_pos = pos;
     }
@@ -85,8 +86,13 @@ public class Player implements IDrawable
         can.restore();
     }
 
-    public void moveRelative(float x, float y, Map map)
+    public void moveRelative(float x, float y)
     {
-        this.move(this.m_pos.x + x, this.m_pos.y + y, map);
+        this.move(this.m_pos.x + x, this.m_pos.y + y);
+    }
+
+    public void setName(String name)
+    {
+        mName = name;
     }
 }

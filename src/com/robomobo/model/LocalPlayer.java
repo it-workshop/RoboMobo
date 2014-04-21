@@ -1,6 +1,9 @@
 package com.robomobo.model;
 
 import android.graphics.*;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
+import com.robomobo.multiplayer.Networking;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IconProvider;
 
@@ -23,7 +26,7 @@ public class LocalPlayer extends Player
 
     public static final float PICKUP_PICK_UP_RANGE = 3.0f;
 
-    public LocalPlayer(float initX, float initY)
+    public LocalPlayer(float initX, float initY, Networking networking)
     {
         m_id = IdGenerator.getInstance().generatePlayerId();
         m_pos = new PointF(initX, initY);
@@ -33,14 +36,16 @@ public class LocalPlayer extends Player
         m_wallHitPos = new float[2];
         m_wallHitPos[0] = 0;
         m_wallHitPos[1] = 0;
+
+        networking.moveSelf(initX, initY);
     }
 
-    public void move(float x, float y, Map map)
+    public void move(float x, float y, Map map, Networking networking)
     {
         float[] direction = new float[2];
         float distance = (float) Math.sqrt(Math.pow(x - m_pos.x, 2) + Math.pow(y - m_pos.y, 2));
-        direction[0] = (float) ((x - m_pos.x) / distance);
-        direction[1] = (float) ((y - m_pos.y) / distance);
+        direction[0] = (x - m_pos.x) / distance;
+        direction[1] = (y - m_pos.y) / distance;
         m_direction = direction[0] > 0 ? Math.acos(-direction[1]) * 180 / Math.PI : 360 - Math.acos(-direction[1]) * 180 / Math.PI;
 
         if (!m_wallHit)
@@ -56,6 +61,33 @@ public class LocalPlayer extends Player
                 }
             }
 
+            if (x<0)
+            {
+                m_wallHitPos[0] = 0;
+                m_wallHitPos[1] = m_pos.y+(y-m_pos.y)/(x-m_pos.x)*(-m_pos.x);
+                m_wallHit = true;
+            }
+
+            if (y<0)
+            {
+                m_wallHitPos[0] = m_pos.x+(x-m_pos.x)/(y-m_pos.y)*(-m_pos.y);
+                m_wallHitPos[1] = 0;
+                m_wallHit = true;
+            }
+
+            if (x>map.getWidth())
+            {
+                m_wallHitPos[0] = map.getWidth();
+                m_wallHitPos[1] = m_pos.y+(y-m_pos.y)/(x-m_pos.x)*(map.getWidth()-m_pos.x);
+                m_wallHit = true;
+            }
+
+            if (y>map.getHeight())
+            {
+                m_wallHitPos[0] = m_pos.x+(x-m_pos.x)/(y-m_pos.y)*(map.getHeight()-m_pos.y);
+                m_wallHitPos[1] = map.getHeight();
+                m_wallHit = true;
+            }
 
             //for(Pickup pickup : map.m_pickups)
             for(int i = 0; i < map.m_pickups.size(); i++)
@@ -67,24 +99,45 @@ public class LocalPlayer extends Player
                 }
             }
         }
-        else
+        else if (Math.sqrt((x - m_wallHitPos[0]) * (x - m_wallHitPos[0]) + (y - m_wallHitPos[1]) * (y - m_wallHitPos[1])) < WALL_UNHIT_RANGE)
         {
-            if (Math.sqrt((x - m_wallHitPos[0]) * (x - m_wallHitPos[0]) + (y - m_wallHitPos[1]) * (y - m_wallHitPos[1])) < WALL_UNHIT_RANGE)
+            boolean stillInsideTheWall = false;
+            for (Map.Obstacle obstacle : map.m_obstacles)
             {
-                boolean stillInsideTheWall = false;
-                for (Map.Obstacle obstacle : map.m_obstacles)
-                {
-                    if (obstacle.check(x, y)) stillInsideTheWall = true;
-                }
-                if (!stillInsideTheWall) m_wallHit = false;
+                if (obstacle.check(x, y)) stillInsideTheWall = true;
             }
+
+            if (x < 0)
+                stillInsideTheWall = true;
+
+            if (y < 0)
+                stillInsideTheWall = true;
+
+            if (x > map.getWidth())
+                stillInsideTheWall = true;
+
+            if (y > map.getHeight())
+                stillInsideTheWall = true;
+
+            if (!stillInsideTheWall)
+                m_wallHit = false;
         }
         m_pos.set(x, y);
+
+        if(m_wallHit)
+            networking.moveSelf(m_wallHitPos[0], m_wallHitPos[1]);
+        else
+            networking.moveSelf(x, y);
     }
     
-    public void move(PointF pos, Map map)
+    public void move(PointF pos, Map map, Networking networking)
     {
-        move(pos.x, pos.y, map);
+        move(pos.x, pos.y, map, networking);
+    }
+
+    public void moveRelative(float x, float y, Map map, Networking networking)
+    {
+        this.move(this.m_pos.x + x, this.m_pos.y + y, map, networking);
     }
 
     @Override

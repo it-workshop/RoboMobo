@@ -2,9 +2,13 @@ package com.robomobo.model;
 
 import android.graphics.*;
 import android.os.CountDownTimer;
+import com.google.android.gms.games.Games;
+import com.robomobo.multiplayer.MultiplayerMessageCodec;
+import com.robomobo.multiplayer.Networking;
 import com.robomobo.view.GRAPHICS;
 import com.robomobo.view.IDrawable;
 import com.robomobo.view.IconProvider;
+import org.json.JSONException;
 
 /**
  * Created by Vsevolod on 17.03.14.
@@ -13,17 +17,25 @@ public class Pickup implements IDrawable
 {
     public PickupType m_type = PickupType.none;
     private int m_lifetime_ms; //lifetime in milliseconds
+    private int mFullLifetime;
     private PointF m_coords;
     private Map m_mapReference;
+    public int mId;
+    private int mPlayersNotConfirmed;
+    private boolean mPickedUp = false;
+    private long mPickUpTimestamp;
+    private String mPickedUpParticipantId;
 
-    public Pickup(float x, float y)
+    public Pickup(float x, float y, int id, int lifetime)
     {
         m_coords = new PointF(x, y);
+        mId = id;
+        mFullLifetime = lifetime;
     }
 
-    public Pickup(float x, float y, PickupType type)
+    public Pickup(float x, float y, int id, int lifetime, PickupType type)
     {
-        this(x, y);
+        this(x, y, id, lifetime);
         m_type = type;
     }
 
@@ -65,8 +77,9 @@ public class Pickup implements IDrawable
     public void register(Map map)
     {
         m_mapReference = map;
+        mPlayersNotConfirmed = m_mapReference.mActivity.mNetworking.mRoomSize-1;
 
-        new CountDownTimer(20000, 10)
+        new CountDownTimer(mFullLifetime, 10)
         {
             @Override
             public void onTick(long millisUntilFinished)
@@ -89,13 +102,85 @@ public class Pickup implements IDrawable
 
     public void onPickedUp()
     {
-        //Increase da score.
-        onRemoved();
+        if(mPickedUp)
+            return;
+        mPickedUp = true;
+        mPickedUpParticipantId = m_mapReference.mActivity.mNetworking.mSelfId;
+        mPickUpTimestamp = System.currentTimeMillis()-m_mapReference.mActivity.mNetworking.mCreationTimestamp;
+        try
+        {
+            m_mapReference.mActivity.mNetworking.reliableBroadcast(MultiplayerMessageCodec.encodePickUp(mId, System.currentTimeMillis()-m_mapReference.mActivity.mNetworking.mCreationTimestamp));
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        m_mapReference.m_drawables.remove(this);
+    }
+
+    public void onPickedUp(String participantId, long timestamp)
+    {
+        if(mPickedUp)
+        {
+            if(timestamp<mPickUpTimestamp)
+            {
+                mPickedUpParticipantId = participantId;
+                mPickUpTimestamp = timestamp;
+                try
+                {
+                    m_mapReference.mActivity.mNetworking.reliableMessage(MultiplayerMessageCodec.encodeConfirm(mId), participantId);
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else
+        {
+            mPickedUp = true;
+            mPickUpTimestamp = timestamp;
+            mPickedUpParticipantId = participantId;
+            m_mapReference.m_drawables.remove(this);
+            try
+            {
+                m_mapReference.mActivity.mNetworking.reliableMessage(MultiplayerMessageCodec.encodeConfirm(mId), participantId);
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void onRemoved()
     {
         m_mapReference.m_drawables.remove(this);
+        m_mapReference.m_pickups.remove(this);
+    }
+
+    public void onConfirmation()
+    {
+        if(--mPlayersNotConfirmed==0)
+        {
+            try
+            {
+                m_mapReference.mActivity.mNetworking.reliableBroadcast(MultiplayerMessageCodec.encodeScore(mId));
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+            m_mapReference.mActivity.m_players.get(m_mapReference.mActivity.mNetworking.mSelfId).addScore(m_type.m_points);
+            m_mapReference.mActivity.updateScores();
+            m_mapReference.m_pickups.remove(this);
+        }
+    }
+
+    public void score(String senderParticipantId)
+    {
+        m_mapReference.mActivity.m_players.get(senderParticipantId).addScore(m_type.m_points);
+        m_mapReference.mActivity.updateScores();
         m_mapReference.m_pickups.remove(this);
     }
 
