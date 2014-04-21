@@ -16,6 +16,7 @@ public class Player implements IDrawable
     protected PointF m_pos;
     protected int m_score;
     protected int m_id;
+    protected String mName;
 
     public Player()
     {
@@ -88,5 +89,10 @@ public class Player implements IDrawable
     public void moveRelative(float x, float y)
     {
         this.move(this.m_pos.x + x, this.m_pos.y + y);
+    }
+
+    public void setName(String name)
+    {
+        mName = name;
     }
 }

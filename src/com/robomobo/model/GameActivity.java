@@ -1,5 +1,8 @@
 package com.robomobo.model;
 
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import com.robomobo.view.IDrawable;
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -36,7 +39,8 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
     public Networking mNetworking;
     public static boolean DEBUG = false;
     private boolean mIsMultiplayer = true;
-
+    private TableLayout mScoresLayout;
+    private HashMap<String, TableRow> mScoresEntries;
 
     public float m_lastPressedX = -1;
     public float m_lastPressedY = -1;
@@ -53,11 +57,12 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
         m_currentMap.registerObject(new Map.Obstacle(10, 20, 30, 40, 0));
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));
         m_players = new HashMap<String, com.robomobo.model.Player>();
+        mScoresEntries = new HashMap<String, TableRow>();
         mNetworking = new Networking(getApiClient(), this);
         setContentView(R.layout.layout_ingame);
+        mScoresLayout = (TableLayout) findViewById(R.id.scores);
 
         ((ToggleButton) findViewById(R.id.toggleDebug)).setChecked(DEBUG);
-
 
         findViewById(R.id.view).setOnTouchListener(new View.OnTouchListener()
         {
@@ -158,7 +163,28 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
             m_currentMap.m_pickups.clear();
             Games.RealTimeMultiplayer.leave(getApiClient(), mNetworking, mNetworking.mRoomId);
             mNetworking = null;
+            mScoresEntries.clear();
+            mScoresLayout.removeAllViewsInLayout();
             signOut();
+        }
+    }
+
+    public void updateScores()
+    {
+        for(String id : m_players.keySet())
+        {
+            TableRow entry;
+            if((entry = mScoresEntries.get(id))==null)
+            {
+                entry = (TableRow) View.inflate(this, R.layout.score_entry, null);
+                mScoresLayout.addView(entry);
+                mScoresEntries.put(id, entry);
+            }
+            TextView name = (TextView) entry.findViewById(R.id.name);
+            if(name.getText().equals(""))
+                name.setText(m_players.get(id).mName);
+            TextView score = (TextView) entry.findViewById(R.id.score);
+            score.setText(String.valueOf(m_players.get(id).getScore()));
         }
     }
 

@@ -38,4 +38,11 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/countdown" android:layout_centerVertical="true" android:layout_centerHorizontal="true"
             android:textColor="#ff0000" android:textSize="64sp"/>
+    <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true" android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true" android:layout_alignParentTop="true" android:id="@+id/scores"
+            android:gravity="bottom">
+    </TableLayout>
 </RelativeLayout>

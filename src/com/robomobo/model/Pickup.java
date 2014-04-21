@@ -172,6 +172,7 @@ public class Pickup implements IDrawable
                 e.printStackTrace();
             }
             m_mapReference.mActivity.m_players.get(m_mapReference.mActivity.mNetworking.mSelfId).addScore(m_type.m_points);
+            m_mapReference.mActivity.updateScores();
             m_mapReference.m_pickups.remove(this);
         }
     }
@@ -179,6 +180,7 @@ public class Pickup implements IDrawable
     public void score(String senderParticipantId)
     {
         m_mapReference.mActivity.m_players.get(senderParticipantId).addScore(m_type.m_points);
+        m_mapReference.mActivity.updateScores();
         m_mapReference.m_pickups.remove(this);
     }
 

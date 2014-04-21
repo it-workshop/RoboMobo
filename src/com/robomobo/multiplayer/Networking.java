@@ -174,11 +174,12 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
                 catch (IllegalArgumentException e)
                 {
                     mSelfId = participantId;
-                    break;
+                    Random r = new Random();
+                    mActivity.m_players.put(mSelfId, new LocalPlayer(r.nextFloat()*100, r.nextFloat()*100, this)); //TODO: spawn points
                 }
+                mActivity.m_players.get(participantId).setName(room.getParticipant(participantId).getDisplayName());
             }
-            Random r = new Random();
-            mActivity.m_players.put(mSelfId, new LocalPlayer(r.nextFloat()*100, r.nextFloat()*100, this)); //TODO: spawn points
+            mActivity.updateScores();
             mParticipantIds = room.getParticipantIds();
             mRoomSize = mParticipantIds.size();
             int seed = (new Random()).nextInt();
