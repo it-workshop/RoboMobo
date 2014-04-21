@@ -58,7 +58,6 @@ public class GameActivity extends com.robomobo.multiplayer.BaseGameActivity impl
         m_currentMap.registerObject(new Map.Obstacle(50, 50, 70, 90, 0));
         m_players = new HashMap<String, com.robomobo.model.Player>();
         mScoresEntries = new HashMap<String, TableRow>();
-        mNetworking = new Networking(getApiClient(), this);
         setContentView(R.layout.layout_ingame);
         mScoresLayout = (TableLayout) findViewById(R.id.scores);
 
