@@ -190,7 +190,7 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
             chooseHost();
             try
             {
-                Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeSeed(seed), mRoomId);
+                reliableBroadcast(MultiplayerMessageCodec.encodeSeed(seed));
             } catch (JSONException e)
             {
                 e.printStackTrace();
@@ -221,9 +221,9 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
         try
         {
             if(Host.mInitialized)
-                Games.RealTimeMultiplayer.sendUnreliableMessage(mClient, MultiplayerMessageCodec.encodePing((int) (System.currentTimeMillis()-mCreationTimestamp)/2), mRoomId, senderId);
+                reliableMessage(MultiplayerMessageCodec.encodePing((int) (System.currentTimeMillis()-mCreationTimestamp)/2), senderId);
             else
-                Games.RealTimeMultiplayer.sendUnreliableMessage(mClient, MultiplayerMessageCodec.encodeSync(), mRoomId, senderId);
+                reliableMessage(MultiplayerMessageCodec.encodeSync(), senderId);
         } catch (JSONException e)
         {
             e.printStackTrace();
@@ -235,7 +235,7 @@ public class Networking implements RoomUpdateListener, RoomStatusUpdateListener,
         mCreationTimestamp-=ping;
         try
         {
-            Games.RealTimeMultiplayer.sendUnreliableMessage(mClient, MultiplayerMessageCodec.encodeReady(), mRoomId, senderId);
+            reliableMessage(MultiplayerMessageCodec.encodeReady(), senderId);
         } catch (JSONException e)
         {
             e.printStackTrace();

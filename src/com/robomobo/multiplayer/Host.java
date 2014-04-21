@@ -37,7 +37,7 @@ public class Host
         networking.mCreationTimestamp = System.currentTimeMillis();
         try
         {
-            Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeSync(), mRoomId);
+            mNetworking.reliableBroadcast(MultiplayerMessageCodec.encodeSync());
         } catch (JSONException e)
         {
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class Host
         mMap.registerObject(new Pickup(x, y, ++mLastPickupId, lifetime, Pickup.PickupType.getElementFromID(type)));
         try
         {
-            Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeSpawn(mLastPickupId, System.currentTimeMillis()-mNetworking.mCreationTimestamp, lifetime, x, y, type), mRoomId);
+            mNetworking.reliableBroadcast(MultiplayerMessageCodec.encodeSpawn(mLastPickupId, System.currentTimeMillis()-mNetworking.mCreationTimestamp, lifetime, x, y, type));
         } catch (JSONException e)
         {
             e.printStackTrace();
@@ -108,7 +108,7 @@ public class Host
             try
             {
                 long startTimestamp = System.currentTimeMillis()-mNetworking.mCreationTimestamp+10000;
-                Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(mClient, MultiplayerMessageCodec.encodeStart(startTimestamp), mRoomId);
+                mNetworking.reliableBroadcast(MultiplayerMessageCodec.encodeStart(startTimestamp));
                 mNetworking.startTimer(startTimestamp);
             } catch (JSONException e)
             {
