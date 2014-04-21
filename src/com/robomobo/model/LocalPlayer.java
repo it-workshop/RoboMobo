@@ -61,6 +61,33 @@ public class LocalPlayer extends Player
                 }
             }
 
+            if (x<0)
+            {
+                m_wallHitPos[0] = 0;
+                m_wallHitPos[1] = m_pos.y+(y-m_pos.y)/(x-m_pos.x)*(-m_pos.x);
+                m_wallHit = true;
+            }
+
+            if (y<0)
+            {
+                m_wallHitPos[0] = m_pos.x+(x-m_pos.x)/(y-m_pos.y)*(-m_pos.y);
+                m_wallHitPos[1] = 0;
+                m_wallHit = true;
+            }
+
+            if (x>map.getWidth())
+            {
+                m_wallHitPos[0] = map.getWidth();
+                m_wallHitPos[1] = m_pos.y+(y-m_pos.y)/(x-m_pos.x)*(map.getWidth()-m_pos.x);
+                m_wallHit = true;
+            }
+
+            if (y>map.getHeight())
+            {
+                m_wallHitPos[0] = m_pos.x+(x-m_pos.x)/(y-m_pos.y)*(map.getHeight()-m_pos.y);
+                m_wallHitPos[1] = map.getHeight();
+                m_wallHit = true;
+            }
 
             //for(Pickup pickup : map.m_pickups)
             for(int i = 0; i < map.m_pickups.size(); i++)
@@ -72,17 +99,28 @@ public class LocalPlayer extends Player
                 }
             }
         }
-        else
+        else if (Math.sqrt((x - m_wallHitPos[0]) * (x - m_wallHitPos[0]) + (y - m_wallHitPos[1]) * (y - m_wallHitPos[1])) < WALL_UNHIT_RANGE)
         {
-            if (Math.sqrt((x - m_wallHitPos[0]) * (x - m_wallHitPos[0]) + (y - m_wallHitPos[1]) * (y - m_wallHitPos[1])) < WALL_UNHIT_RANGE)
+            boolean stillInsideTheWall = false;
+            for (Map.Obstacle obstacle : map.m_obstacles)
             {
-                boolean stillInsideTheWall = false;
-                for (Map.Obstacle obstacle : map.m_obstacles)
-                {
-                    if (obstacle.check(x, y)) stillInsideTheWall = true;
-                }
-                if (!stillInsideTheWall) m_wallHit = false;
+                if (obstacle.check(x, y)) stillInsideTheWall = true;
             }
+
+            if (x < 0)
+                stillInsideTheWall = true;
+
+            if (y < 0)
+                stillInsideTheWall = true;
+
+            if (x > map.getWidth())
+                stillInsideTheWall = true;
+
+            if (y > map.getHeight())
+                stillInsideTheWall = true;
+
+            if (!stillInsideTheWall)
+                m_wallHit = false;
         }
         m_pos.set(x, y);
 
